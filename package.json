@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@grammyjs/conversations": "^1.2.0",
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
     "grammy": "^1.34.0",
     "mongoose": "^8.9.3"
