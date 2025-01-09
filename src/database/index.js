@@ -1,9 +1,19 @@
 /* eslint-disable no-undef */
-import mongoose from 'mongoose';
 import { config } from 'dotenv';
 
 config();
-export const connectDb = async () => {
-  await mongoose.connect(process.env.MONGODB_URL);
-  console.log('Database connected successfuyl !');
-};
+
+import { Sequelize } from "sequelize";
+
+const sequelize = new Sequelize({
+  dialect: 'postgres',
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  sync: true,
+  logging: false,
+})
+
+export default sequelize

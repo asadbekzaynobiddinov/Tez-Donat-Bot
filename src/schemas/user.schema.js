@@ -1,21 +1,56 @@
-import mongoose, { model } from 'mongoose';
-const { Schema } = mongoose;
+import { DataTypes } from 'sequelize';
+import sequelize from '../database/index.js';
 
 const UserRoles = {
   user: 'user',
   admin: 'admin',
 };
 
-const userSchema = new Schema({
-  telegram_id: { type: Number, required: true },
-  first_name: { type: String, required: true },
-  last_name: { type: String, required: true },
-  username: { type: String, required: true },
-  email: { type: String, unique: true, required: true },
-  password: { type: String, required: true },
-  phone_number: { type: String, maxlength: 15, required: true },
-  balance: { type: Number, default: 0 },
-  role: { type: String, enum: Object.values(UserRoles), default: UserRoles.user },
+export const User = sequelize.define('User', {
+  telegram_id: {
+    type: DataTypes.BIGINT,
+    allowNull: false,
+  },
+  first_name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  last_name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  username: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    validate: {
+      isEmail: true,
+    },
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  phone_number: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      len: [0, 15],
+    },
+  },
+  balance: {
+    type: DataTypes.DECIMAL(10, 2),
+    defaultValue: 0,
+  },
+  role: {
+    type: DataTypes.ENUM(Object.values(UserRoles)),
+    defaultValue: UserRoles.user,
+  },
+}, {
+  tableName: 'users',
+  timestamps: true,
 });
-
-export const User = model('User', userSchema);

@@ -33,7 +33,7 @@ export const registerConversation = async (
           continue;
         }
 
-        const currentUser = await User.findOne({ email });
+        const currentUser = await User.findAll({ where: { email }});
         if (currentUser.length === 0) {
           break;
         } else {
@@ -105,7 +105,7 @@ export const registerConversation = async (
           continue;
         }
 
-        const currentUser = await User.find({ email });
+        const currentUser = await User.findAll({ where: { email } });
         if (currentUser.length === 0) {
           break;
         } else {
@@ -177,7 +177,7 @@ export const registerConversation = async (
           continue;
         }
 
-        const currentUser = await User.find({ email });
+        const currentUser = await User.findAll({ where: { email } });
         if (currentUser.length === 0) {
           break;
         } else {
@@ -232,7 +232,7 @@ export const registerConversation = async (
       break;
   }
 
-  const thisPromocode = await Promocode.findOne({ content: promocode })
+  const thisPromocode = await Promocode.findOne({ where: { content: promocode } })
 
   let balance = 0;
 
@@ -253,7 +253,7 @@ export const registerConversation = async (
     balance,
   };
 
-  const newUser = User.create(currentUser);
-  (await newUser).save();
+  const newUser = await User.create(currentUser)
+  console.log(newUser)
   return;
 };
