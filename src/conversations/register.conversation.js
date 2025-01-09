@@ -1,11 +1,10 @@
 /* eslint-disable no-constant-condition */
-import { Keyboard } from "grammy";
-import { User, Promocode } from "../schemas/index.js";
-import { hashPassword } from "../utils/index.js";
+import { Keyboard } from 'grammy';
+import { User, Promocode } from '../schemas/index.js';
+import { hashPassword } from '../utils/index.js';
+import { startCommand } from '../commands/start.command.js';
 
-export const registerConversation = async (
-  conversation, ctx
-) => {
+export const registerConversation = async (conversation, ctx) => {
   let emailMessage;
   let email;
 
@@ -19,21 +18,23 @@ export const registerConversation = async (
   let promocode;
 
   switch (ctx.session.lang) {
-    case 'uz':
-      { await ctx.reply(
-        'Emailingizni kiriting 📧\nMasalan: ( tezdonat_bot@gmail.com )',
+    case 'uz': {
+      await ctx.api.editMessageText(
+        ctx.from.id,
+        ctx.update.callback_query.message.message_id,
+        'Emailingizni kiriting 📧\nMasalan: ( tezdonat_bot@gmail.com )'
       );
       do {
         emailMessage = await conversation.wait();
         email = emailMessage.message.text;
         const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 
-        if (!emailRegex.test(email)) {
+        if (!email || !emailRegex.test(email)) {
           ctx.reply(`Emailni to'g'ri formatda kiriting 🤦🏻‍♂️`);
           continue;
         }
 
-        const currentUser = await User.findAll({ where: { email }});
+        const currentUser = await User.findAll({ where: { email } });
         if (currentUser.length === 0) {
           break;
         } else {
@@ -42,13 +43,13 @@ export const registerConversation = async (
       } while (true);
 
       await ctx.reply(
-        `Yaxshi. 🤙🏻\nEndi esa yodda qolarli parol o'ylab toping. 🔒\nParol kamida 6 ta belgidan iborat bo'lsin.`,
+        `Yaxshi. 🤙🏻\nEndi esa yodda qolarli parol o'ylab toping. 🔒\nParol kamida 6 ta belgidan iborat bo'lsin.`
       );
 
       do {
         passwordMessage = await conversation.wait();
         password = passwordMessage.message.text;
-        if (password.length >= 6) {
+        if (!password || password.length >= 6) {
           break;
         } else {
           ctx.reply(`Parol kamida 6 ta belgidan iborat bo'lishi kerak 🤦🏻‍♂️`);
@@ -65,34 +66,27 @@ export const registerConversation = async (
         {
           parse_mode: 'HTML',
           reply_markup: numberKeyUz,
-        },
+        }
       );
 
       contactMessage = await conversation.wait();
       phone_number = contactMessage.message.contact.phone_number;
 
       await ctx.reply(
-        `Ajoyib. 👌🏻\nEndi asosiy qism. \nPromokod bo'lsa kiriting 🎟️\nYo'q bo'lsa shunchaki yo'q deng. 🤫`,
+        `Ajoyib. 👌🏻\nEndi asosiy qism. \nPromokod bo'lsa kiriting 🎟️\nYo'q bo'lsa shunchaki yo'q deng. 🤫`
       );
 
       promocodeMessage = await conversation.wait();
       promocode = promocodeMessage.message.text;
 
-      await ctx.reply(
-        `Tabriklayman 🥳. \nRo'yxatdan o'tishni amalga oshirdingz 🎉.\nEndi tizimga kirishingiz kerak 😁.\nBu havfsizlik uchun albatta 👮🏻‍♂️.`,
-        {
-          reply_markup: {
-            inline_keyboard: [
-              [{ text: 'Tizimga kirish', callback_data: 'login' }],
-            ],
-          },
-        },
-      );
-      break; }
+      break;
+    }
 
-    case 'en':
-      { await ctx.reply(
-        'Enter your email 📧\nFor example: (tezdonat_bot@gmail.com)',
+    case 'en': {
+      await ctx.api.editMessageText(
+        ctx.from.id,
+        ctx.update.callback_query.message.message_id,
+        'Enter your email 📧\nFor example: (tezdonat_bot@gmail.com)'
       );
 
       do {
@@ -100,7 +94,7 @@ export const registerConversation = async (
         email = emailMessage.message.text;
         const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 
-        if (!emailRegex.test(email)) {
+        if (!email || !emailRegex.test(email)) {
           ctx.reply(`Please enter a valid email format 🤦🏻‍♂️`);
           continue;
         }
@@ -110,19 +104,19 @@ export const registerConversation = async (
           break;
         } else {
           ctx.reply(
-            'This email is already taken 😔.\nPlease enter another one:',
+            'This email is already taken 😔.\nPlease enter another one:'
           );
         }
       } while (true);
 
       await ctx.reply(
-        'Great. 🤙🏻\nNow think of a memorable password. 🔒\nThe password must be at least 6 characters long.',
+        'Great. 🤙🏻\nNow think of a memorable password. 🔒\nThe password must be at least 6 characters long.'
       );
 
       do {
         passwordMessage = await conversation.wait();
         password = passwordMessage.message.text;
-        if (password.length >= 6) {
+        if (!password || password.length >= 6) {
           break;
         } else {
           ctx.reply('The password must be at least 6 characters long 🤦🏻‍♂️');
@@ -139,32 +133,27 @@ export const registerConversation = async (
         {
           parse_mode: 'HTML',
           reply_markup: numberKeyEn,
-        },
+        }
       );
 
       contactMessage = await conversation.wait();
       phone_number = contactMessage.message.contact.phone_number;
 
       await ctx.reply(
-        'Excellent. 👌🏻\nNow the main part. \nIf you have a promo code, enter it 🎟️\nIf not, simply say no. 🤫',
+        'Excellent. 👌🏻\nNow the main part. \nIf you have a promo code, enter it 🎟️\nIf not, simply say no. 🤫'
       );
 
       promocodeMessage = await conversation.wait();
       promocode = promocodeMessage.message.text;
 
-      await ctx.reply(
-        `Congratulations 🥳. \nYou’ve successfully registered 🎉.\nNow, you need to log in 😁.\nThis is for security purposes, of course 👮🏻‍♂️.`,
-        {
-          reply_markup: {
-            inline_keyboard: [[{ text: 'Log In', callback_data: 'login' }]],
-          },
-        },
-      );
-      break; }
+      break;
+    }
 
-    case 'ru':
-      { await ctx.reply(
-        'Введите ваш email 📧\nНапример: ( tezdonat_bot@gmail.com )',
+    case 'ru': {
+      await ctx.api.editMessageText(
+        ctx.from.id,
+        ctx.update.callback_query.message.message_id,
+        'Введите ваш email 📧\nНапример: ( tezdonat_bot@gmail.com )'
       );
 
       do {
@@ -172,7 +161,7 @@ export const registerConversation = async (
         email = emailMessage.message.text;
         const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 
-        if (!emailRegex.test(email)) {
+        if (!email || !emailRegex.test(email)) {
           ctx.reply(`Пожалуйста, введите правильный формат email 🤦🏻‍♂️`);
           continue;
         }
@@ -188,7 +177,7 @@ export const registerConversation = async (
       do {
         passwordMessage = await conversation.wait();
         password = passwordMessage.message.text;
-        if (password.length >= 6) {
+        if (!password || password.length >= 6) {
           break;
         } else {
           ctx.reply('Пароль должен содержать минимум 6 символов 🤦🏻‍♂️');
@@ -205,34 +194,32 @@ export const registerConversation = async (
         {
           parse_mode: 'HTML',
           reply_markup: numberKeyRu,
-        },
+        }
       );
 
       contactMessage = await conversation.wait();
       phone_number = contactMessage.message.contact.phone_number;
 
       await ctx.reply(
-        'Прекрасно. 👌🏻\nТеперь основная часть. \nЕсли у вас есть промокод, введите его 🎟️\nЕсли нет, просто скажите «нет» 🤫',
+        'Прекрасно. 👌🏻\nТеперь основная часть. \nЕсли у вас есть промокод, введите его 🎟️\nЕсли нет, просто скажите «нет» 🤫'
       );
 
       promocodeMessage = await conversation.wait();
       promocode = promocodeMessage.message.text;
 
-      await ctx.reply(
-        `Поздравляю 🥳. \nВы успешно зарегистрировались 🎉.\nТеперь вам нужно войти в систему 😁.\nЭто, конечно, для безопасности 👮🏻‍♂️.`,
-        {
-          reply_markup: {
-            inline_keyboard: [[{ text: 'Войти', callback_data: 'login' }]],
-          },
-        },
-      );
-
-      break; }
+      break;
+    }
     default:
       break;
   }
 
-  const thisPromocode = await Promocode.findOne({ where: { content: promocode } })
+  let thisPromocode;
+
+  try {
+    thisPromocode = await Promocode.findOne({ where: { content: promocode } });
+  } catch (error) {
+    ctx.api.sendMessage('@bots_errors', error.message);
+  }
 
   let balance = 0;
 
@@ -249,11 +236,14 @@ export const registerConversation = async (
     username: ctx.from.username || 'unknown',
     email,
     password,
-    phone_number,
+    phone_number: phone_number || 'unknown',
     balance,
   };
 
-  const newUser = await User.create(currentUser)
-  console.log(newUser)
-  return;
+  try {
+    await User.create(currentUser);
+  } catch (error) {
+    ctx.api.sendMessage('@bots_errors', error.message);
+  }
+  startCommand(ctx);
 };
