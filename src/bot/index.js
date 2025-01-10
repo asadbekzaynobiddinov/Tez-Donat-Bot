@@ -3,7 +3,12 @@ import { Bot, session } from 'grammy';
 import { conversations, createConversation } from '@grammyjs/conversations';
 import { config } from 'dotenv';
 import { registerConversation } from '../conversations/index.js';
-import { startCommand } from '../commands/index.js';
+import {
+  startCommand,
+  shopCommand,
+  changeLang,
+  setLang,
+} from '../commands/index.js';
 
 config();
 
@@ -29,11 +34,18 @@ bot.on('callback_query:data', async (ctx) => {
     const callBackData = ctx.update.callback_query.data;
     const [command] = callBackData.split('=');
 
-    console.log(command)
-
     switch (command) {
       case 'register':
         await ctx.conversation.enter('registerConversation');
+        break;
+      case 'uz':
+        setLang(ctx, 'uz');
+        break;
+      case 'en':
+        setLang(ctx, 'en');
+        break;
+      case 'ru':
+        setLang(ctx, 'ru');
         break;
       default:
         break;
@@ -56,4 +68,28 @@ bot.hears(`English 🇺🇸`, (ctx) => {
 bot.hears(`Русский 🇷🇺`, (ctx) => {
   ctx.session.lang = 'ru';
   startCommand(ctx);
+});
+
+bot.hears(`🛒 Do'kon`, (ctx) => {
+  shopCommand(ctx);
+});
+
+bot.hears(`🛒 Shop`, (ctx) => {
+  shopCommand(ctx);
+});
+
+bot.hears(`🛒 Магазин`, (ctx) => {
+  shopCommand(ctx);
+});
+
+bot.hears(`🌍 Tilni o'zgartirish`, (ctx) => {
+  changeLang(ctx);
+});
+
+bot.hears(`🌍 Change Language`, (ctx) => {
+  changeLang(ctx);
+});
+
+bot.hears(`🌍 Сменить язык`, (ctx) => {
+  changeLang(ctx);
 });

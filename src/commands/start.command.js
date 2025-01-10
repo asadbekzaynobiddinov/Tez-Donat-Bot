@@ -1,4 +1,4 @@
-import { Keyboard, InlineKeyboard } from 'grammy';
+import { Keyboard } from 'grammy';
 import { User } from '../schemas/index.js';
 
 export const startCommand = async (ctx) => {
@@ -72,53 +72,66 @@ export const startCommand = async (ctx) => {
 
   switch (ctx.session.lang) {
     case 'uz':
-      mainMenuKeys = new InlineKeyboard()
-        .text(`🛒 Do'kon`, 'shop')
-        .text('👤 Kabinet', 'profile').row()
-        .text('🌐 Buyurtmalar tarixi', 'order_history')
-        .text(`💰 Xisob to'ldirish`, 'payment').row()
-        .text(`📕 Qo'llanma`, 'manual')
-        .text('☎️ Yordam uchun', 'for_help').row()
-        .text(`📝 To'lov tarixi`, 'payment_history').row()
-        .text(`🌍 Tilni o'zgartirish`, 'change_lang');
-      ctx.reply(`Kereakli bo'limni tanlang`, {
-        reply_markup: mainMenuKeys
-      });  
+      mainMenuKeys = new Keyboard()
+        .text(`🛒 Do'kon`)
+        .text('👤 Kabinet')
+        .row()
+        .text('🌐 Buyurtmalar tarixi')
+        .text(`💰 Xisob to'ldirish`)
+        .row()
+        .text(`📕 Qo'llanma`)
+        .text('☎️ Yordam uchun')
+        .row()
+        .text(`📝 To'lov tarixi`)
+        .text(`🌍 Tilni o'zgartirish`)
+        .resized();
+      ctx.reply(`☟ Kereakli bo'limni tanlang:`, {
+        reply_markup: mainMenuKeys,
+      });
       break;
-  
-    case 'en':
-      mainMenuKeys = new InlineKeyboard()
-        .text('🛒 Shop', 'shop')
-        .text('👤 Profile', 'profile').row()
-        .text('🌐 Order History', 'order_history')
-        .text('💰 Recharge Account', 'payment').row()
-        .text('📕 Manual', 'manual')
-        .text('☎️ Help', 'for_help').row()
-        .text('📝 Payment History', 'payment_history').row()
-        .text('🌍 Change Language', 'change_lang');
 
-      ctx.reply(`Select the desired section`, {
-        reply_markup: mainMenuKeys
+    case 'en':
+      mainMenuKeys = new Keyboard()
+        .text('🛒 Shop')
+        .text('👤 Profile')
+        .row()
+        .text('🌐 Order History')
+        .text('💰 Recharge Account')
+        .row()
+        .text('📕 Manual')
+        .text('☎️ Help')
+        .row()
+        .text('📝 Payment History')
+        .text('🌍 Change Language')
+        .resized();
+
+      ctx.reply(`☟ Select the desired section:`, {
+        reply_markup: mainMenuKeys,
       });
       break;
 
     case 'ru':
-      mainMenuKeys = new InlineKeyboard()
-        .text('🛒 Магазин', 'shop')
-        .text('👤 Профиль', 'profile').row()
-        .text('🌐 История заказов', 'order_history')
-        .text('💰 Пополнение счета', 'payment').row()
-        .text('📕 Руководство', 'manual')
-        .text('☎️ Помощь', 'for_help').row()
-        .text('📝 История платежей', 'payment_history').row()
-        .text('🌍 Сменить язык', 'change_lang');
-      
-      ctx.reply(`Выберите нужный раздел`, {
-        reply_markup: mainMenuKeys
+      mainMenuKeys = new Keyboard()
+        .text('🛒 Магазин')
+        .text('👤 Профиль')
+        .row()
+        .text('🌐 История заказов')
+        .text('💰 Пополнение счета')
+        .row()
+        .text('📕 Руководство')
+        .text('☎️ Помощь')
+        .row()
+        .text('📝 История платежей')
+        .text('🌍 Сменить язык')
+        .resized();
+
+      ctx.reply(`☟ Выберите нужный раздел:`, {
+        reply_markup: mainMenuKeys,
       });
       break;
-    
+
     default:
       break;
   }
+  return;
 };
