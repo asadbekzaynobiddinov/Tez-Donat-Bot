@@ -28,7 +28,7 @@ export const startCommand = async (ctx) => {
       .resized()
       .oneTime();
 
-      
+
     return ctx.reply(message, {
       reply_markup: langKeys,
     });
@@ -65,7 +65,26 @@ export const startCommand = async (ctx) => {
         );
 
       default:
-        break;
+        {
+          const message =
+            `Kerakli tilni tanlang: 🇺🇿\n` +
+            'Choose your language: 🇺🇸\n' +
+            'Выберите язык: 🇷🇺';
+
+          const langKeys = new Keyboard()
+            .text(`O'zbek 🇺🇿`)
+            .row()
+            .text(`English 🇺🇸`)
+            .row()
+            .text(`Русский 🇷🇺`)
+            .resized()
+            .oneTime();
+
+
+          return ctx.reply(message, {
+            reply_markup: langKeys,
+          });
+        }
     }
   }
 
@@ -132,7 +151,26 @@ export const startCommand = async (ctx) => {
       break;
 
     default:
-      break;
+      {
+        const message =
+          `Kerakli tilni tanlang: 🇺🇿\n` +
+          'Choose your language: 🇺🇸\n' +
+          'Выберите язык: 🇷🇺';
+
+        const langKeys = new Keyboard()
+          .text(`O'zbek 🇺🇿`)
+          .row()
+          .text(`English 🇺🇸`)
+          .row()
+          .text(`Русский 🇷🇺`)
+          .resized()
+          .oneTime();
+
+
+        return ctx.reply(message, {
+          reply_markup: langKeys,
+        });
+      }
   }
   return;
 };

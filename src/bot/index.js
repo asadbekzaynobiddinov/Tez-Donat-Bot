@@ -8,6 +8,7 @@ import {
   shopCommand,
   changeLang,
   setLang,
+  profileCommmand
 } from '../commands/index.js';
 
 config();
@@ -93,3 +94,41 @@ bot.hears(`🌍 Change Language`, (ctx) => {
 bot.hears(`🌍 Сменить язык`, (ctx) => {
   changeLang(ctx);
 });
+
+bot.hears('👤 Kabinet', (ctx) => {
+  profileCommmand(ctx);
+});
+
+bot.hears(`👤 Profile`, (ctx) => {
+  profileCommmand(ctx);
+});
+
+bot.hears(`👤 Профиль`, (ctx) => {
+  profileCommmand(ctx);
+});
+
+// bot.hears(`🌍 Сменить язык`, (ctx) => {
+//   changeLang(ctx);
+// });
+
+// bot.hears(`🌍 Сменить язык`, (ctx) => {
+//   changeLang(ctx);
+// });
+
+// bot.hears(`🌍 Сменить язык`, (ctx) => {
+//   changeLang(ctx);
+// });
+
+// bot.hears(`🌍 Сменить язык`, (ctx) => {
+//   changeLang(ctx);
+// });
+
+// bot.hears(`🌍 Сменить язык`, (ctx) => {
+//   changeLang(ctx);
+// });
+
+// bot.hears(`🌍 Сменить язык`, (ctx) => {
+//   changeLang(ctx);
+// });
+
+
