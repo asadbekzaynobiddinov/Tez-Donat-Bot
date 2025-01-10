@@ -28,6 +28,7 @@ export const startCommand = async (ctx) => {
       .resized()
       .oneTime();
 
+      
     return ctx.reply(message, {
       reply_markup: langKeys,
     });
