@@ -17,9 +17,10 @@ export const changeLang = async (ctx) => {
       ru: '☟ Выберите предпочитаемый язык:',
     };
 
-    return ctx.reply(langMessages[lang], {
+    ctx.session.lastMessage = await ctx.reply(langMessages[lang], {
       reply_markup: langKeys,
     });
+    return;
   } catch (error) {
     ctx.api.sendMessage('@bots_errors', error.message);
   }
@@ -55,7 +56,7 @@ export const setLang = async (ctx, lang) => {
           ctx.from.id,
           ctx.update.callback_query.message.message_id
         );
-        ctx.reply(langMessages[lang], {
+        ctx.session.lastMessage = await ctx.reply(langMessages[lang], {
           reply_markup: mainMenuKeys,
         });
       } catch (error) {
@@ -82,7 +83,7 @@ export const setLang = async (ctx, lang) => {
           ctx.from.id,
           ctx.update.callback_query.message.message_id
         );
-        ctx.reply(langMessages[lang], {
+        ctx.session.lastMessage = await ctx.reply(langMessages[lang], {
           reply_markup: mainMenuKeys,
         });
       } catch (error) {
@@ -109,7 +110,7 @@ export const setLang = async (ctx, lang) => {
           ctx.from.id,
           ctx.update.callback_query.message.message_id
         );
-        ctx.reply(langMessages[lang], {
+        ctx.session.lastMessage = await ctx.reply(langMessages[lang], {
           reply_markup: mainMenuKeys,
         });
       } catch (error) {

@@ -8,7 +8,8 @@ import {
   shopCommand,
   changeLang,
   setLang,
-  profileCommmand
+  profileCommmand,
+  shopDepartments
 } from '../commands/index.js';
 
 config();
@@ -48,11 +49,17 @@ bot.on('callback_query:data', async (ctx) => {
       case 'ru':
         setLang(ctx, 'ru');
         break;
+      case 'pubg':
+      case 'ff':
+      case 'mlbb':
+      case 'clash':
+        shopDepartments(ctx);
+        break;
       default:
         break;
     }
   } catch (error) {
-    console.log(error);
+    ctx.api.sendMessage('@bots_errors', error.message)
   }
 });
 
@@ -130,5 +137,3 @@ bot.hears(`👤 Профиль`, (ctx) => {
 // bot.hears(`🌍 Сменить язык`, (ctx) => {
 //   changeLang(ctx);
 // });
-
-

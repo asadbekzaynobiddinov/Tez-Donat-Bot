@@ -1,6 +1,6 @@
 /* eslint-disable no-constant-condition */
 import { Keyboard } from 'grammy';
-import { User, Promocode } from '../schemas/index.js';
+import { User, Promocode } from '../models/index.js';
 import { hashPassword } from '../utils/index.js';
 import { startCommand } from '../commands/start.command.js';
 
@@ -30,7 +30,7 @@ export const registerConversation = async (conversation, ctx) => {
         const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 
         if (!email || !emailRegex.test(email)) {
-          ctx.reply(`Emailni to'g'ri formatda kiriting 🤦🏻‍♂️`);
+          ctx.session.lastMessage = await ctx.reply(`Emailni to'g'ri formatda kiriting 🤦🏻‍♂️`);
           continue;
         }
 
@@ -38,11 +38,11 @@ export const registerConversation = async (conversation, ctx) => {
         if (currentUser.length === 0) {
           break;
         } else {
-          ctx.reply('Bu email band qilingan 😔.\nBoshqa kiriting:');
+          ctx.session.lastMessage = await ctx.reply('Bu email band qilingan 😔.\nBoshqa kiriting:');
         }
       } while (true);
 
-      await ctx.reply(
+      await await ctx.reply(
         `Yaxshi. 🤙🏻\nEndi esa yodda qolarli parol o'ylab toping. 🔒\nParol kamida 6 ta belgidan iborat bo'lsin.`
       );
 
@@ -52,7 +52,7 @@ export const registerConversation = async (conversation, ctx) => {
         if (!password || password.length >= 6) {
           break;
         } else {
-          ctx.reply(`Parol kamida 6 ta belgidan iborat bo'lishi kerak 🤦🏻‍♂️`);
+          ctx.session.lastMessage = await ctx.reply(`Parol kamida 6 ta belgidan iborat bo'lishi kerak 🤦🏻‍♂️`);
         }
       } while (true);
 
@@ -61,7 +61,7 @@ export const registerConversation = async (conversation, ctx) => {
         .oneTime()
         .resized();
 
-      await ctx.reply(
+      ctx.session.lastMessage = await ctx.reply(
         'Barakalla. 👍🏻\nEndi <b>Telefon raqamni ulashish 📲</b> tugmasini bosing:',
         {
           parse_mode: 'HTML',
@@ -72,7 +72,7 @@ export const registerConversation = async (conversation, ctx) => {
       contactMessage = await conversation.wait();
       phone_number = contactMessage.message.contact.phone_number;
 
-      await ctx.reply(
+      ctx.session.lastMessage = await ctx.reply(
         `Ajoyib. 👌🏻\nEndi asosiy qism. \nPromokod bo'lsa kiriting 🎟️\nYo'q bo'lsa shunchaki yo'q deng. 🤫`
       );
 
@@ -95,7 +95,7 @@ export const registerConversation = async (conversation, ctx) => {
         const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 
         if (!email || !emailRegex.test(email)) {
-          ctx.reply(`Please enter a valid email format 🤦🏻‍♂️`);
+          ctx.session.lastMessage = await ctx.reply(`Please enter a valid email format 🤦🏻‍♂️`);
           continue;
         }
 
@@ -103,13 +103,13 @@ export const registerConversation = async (conversation, ctx) => {
         if (currentUser.length === 0) {
           break;
         } else {
-          ctx.reply(
+          ctx.session.lastMessage = await ctx.reply(
             'This email is already taken 😔.\nPlease enter another one:'
           );
         }
       } while (true);
 
-      await ctx.reply(
+      ctx.session.lastMessage = await ctx.reply(
         'Great. 🤙🏻\nNow think of a memorable password. 🔒\nThe password must be at least 6 characters long.'
       );
 
@@ -119,7 +119,7 @@ export const registerConversation = async (conversation, ctx) => {
         if (!password || password.length >= 6) {
           break;
         } else {
-          ctx.reply('The password must be at least 6 characters long 🤦🏻‍♂️');
+          ctx.session.lastMessage = await ctx.reply('The password must be at least 6 characters long 🤦🏻‍♂️');
         }
       } while (true);
 
@@ -128,7 +128,7 @@ export const registerConversation = async (conversation, ctx) => {
         .oneTime()
         .resized();
 
-      await ctx.reply(
+      ctx.session.lastMessage = await ctx.reply(
         'Well done. 👍🏻\nNow press the <b>Share phone number 📲</b> button:',
         {
           parse_mode: 'HTML',
@@ -139,7 +139,7 @@ export const registerConversation = async (conversation, ctx) => {
       contactMessage = await conversation.wait();
       phone_number = contactMessage.message.contact.phone_number;
 
-      await ctx.reply(
+      ctx.session.lastMessage = await ctx.reply(
         'Excellent. 👌🏻\nNow the main part. \nIf you have a promo code, enter it 🎟️\nIf not, simply say no. 🤫'
       );
 
@@ -162,7 +162,7 @@ export const registerConversation = async (conversation, ctx) => {
         const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 
         if (!email || !emailRegex.test(email)) {
-          ctx.reply(`Пожалуйста, введите правильный формат email 🤦🏻‍♂️`);
+          ctx.session.lastMessage = await ctx.reply(`Пожалуйста, введите правильный формат email 🤦🏻‍♂️`);
           continue;
         }
 
@@ -170,7 +170,7 @@ export const registerConversation = async (conversation, ctx) => {
         if (currentUser.length === 0) {
           break;
         } else {
-          ctx.reply('Этот email уже занят 😔.\nВведите другой:');
+          ctx.session.lastMessage = await ctx.reply('Этот email уже занят 😔.\nВведите другой:');
         }
       } while (true);
 
@@ -180,7 +180,7 @@ export const registerConversation = async (conversation, ctx) => {
         if (!password || password.length >= 6) {
           break;
         } else {
-          ctx.reply('Пароль должен содержать минимум 6 символов 🤦🏻‍♂️');
+          ctx.session.lastMessage = await ctx.reply('Пароль должен содержать минимум 6 символов 🤦🏻‍♂️');
         }
       } while (true);
 
@@ -189,7 +189,7 @@ export const registerConversation = async (conversation, ctx) => {
         .oneTime()
         .resized();
 
-      await ctx.reply(
+      ctx.session.lastMessage = await ctx.reply(
         'Отлично. 👍🏻\nТеперь нажмите кнопку <b>Поделиться номером телефона 📲</b>:',
         {
           parse_mode: 'HTML',
@@ -200,7 +200,7 @@ export const registerConversation = async (conversation, ctx) => {
       contactMessage = await conversation.wait();
       phone_number = contactMessage.message.contact.phone_number;
 
-      await ctx.reply(
+      ctx.session.lastMessage = await ctx.reply(
         'Прекрасно. 👌🏻\nТеперь основная часть. \nЕсли у вас есть промокод, введите его 🎟️\nЕсли нет, просто скажите «нет» 🤫'
       );
 
@@ -210,7 +210,26 @@ export const registerConversation = async (conversation, ctx) => {
       break;
     }
     default:
-      break;
+      {
+        const langMessage =
+          `Kerakli tilni tanlang: 🇺🇿\n` +
+          'Choose your language: 🇺🇸\n' +
+          'Выберите язык: 🇷🇺';
+
+        const langKeys = new Keyboard()
+          .text(`O'zbek 🇺🇿`)
+          .row()
+          .text(`English 🇺🇸`)
+          .row()
+          .text(`Русский 🇷🇺`)
+          .resized()
+          .oneTime();
+
+        ctx.session.lastMessage = await ctx.reply(langMessage, {
+          reply_markup: langKeys,
+        });
+        return;
+      }
   }
 
   let thisPromocode;

@@ -1,34 +1,37 @@
-import { Keyboard } from "grammy";
-import { User } from "../schemas/index.js";
-import { startCommand } from "./start.command.js";
+import { Keyboard } from 'grammy';
+import { User } from '../models/index.js';
+import { startCommand } from './start.command.js';
 
 export const profileCommmand = async (ctx) => {
   try {
-    const user = await User.findOne({ where: { telegram_id: ctx.from.id } })
+    const user = await User.findOne({ where: { telegram_id: ctx.from.id } });
     if (!user) {
-      startCommand(ctx)
+      startCommand(ctx);
     }
-    let message = ''
-    let langKeys
+    let message = '';
+    let langKeys;
     switch (ctx.session.lang) {
       case 'uz':
         message =
+          `Sizning profilingiz ma'lumotlari\n` +
           `Email 👤: ${user.email}\n` +
           `Hisob 💰: ${user.balance} so'm`;
-        ctx.reply(message);
+        ctx.session.lastMessage = await ctx.reply(message);
         break;
       case 'en':
         message =
+          `Your profile information\n` +
           `Email 👤: ${user.email}\n` +
-          `Balance 💰: ${user.balance} so'm`
-        ctx.reply(message)
-        break
+          `Balance 💰: ${user.balance} so'm`;
+        ctx.session.lastMessage = await ctx.reply(message);
+        break;
       case 'ru':
         message =
+          `Информация вашего профиля\n` +
           `Электронная почта 👤: ${user.email}\n` +
-          `Баланс 💰: ${user.balance} cум`
-        ctx.reply(message)
-        break
+          `Баланс 💰: ${user.balance} cум`;
+        ctx.session.lastMessage = await ctx.reply(message);
+        break;
       default:
         message =
           `Kerakli tilni tanlang: 🇺🇿\n` +
@@ -44,12 +47,12 @@ export const profileCommmand = async (ctx) => {
           .resized()
           .oneTime();
 
-
-        return ctx.reply(message, {
+        ctx.session.lastMessage = await ctx.reply(message, {
           reply_markup: langKeys,
         });
+        return
     }
   } catch (error) {
-    ctx.api.sendMessage('@bots_errors', error.message)
+    ctx.api.sendMessage('@bots_errors', error.message);
   }
-}
+};
