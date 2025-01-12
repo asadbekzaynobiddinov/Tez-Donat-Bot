@@ -8,6 +8,8 @@ import {
   shopCommand,
   changeLang,
   setLang,
+  profileCommmand,
+  shopDepartments
 } from '../commands/index.js';
 
 config();
@@ -47,11 +49,17 @@ bot.on('callback_query:data', async (ctx) => {
       case 'ru':
         setLang(ctx, 'ru');
         break;
+      case 'pubg':
+      case 'ff':
+      case 'mlbb':
+      case 'clash':
+        shopDepartments(ctx);
+        break;
       default:
         break;
     }
   } catch (error) {
-    console.log(error);
+    ctx.api.sendMessage('@bots_errors', error.message)
   }
 });
 
@@ -93,3 +101,39 @@ bot.hears(`🌍 Change Language`, (ctx) => {
 bot.hears(`🌍 Сменить язык`, (ctx) => {
   changeLang(ctx);
 });
+
+bot.hears('👤 Kabinet', (ctx) => {
+  profileCommmand(ctx);
+});
+
+bot.hears(`👤 Profile`, (ctx) => {
+  profileCommmand(ctx);
+});
+
+bot.hears(`👤 Профиль`, (ctx) => {
+  profileCommmand(ctx);
+});
+
+// bot.hears(`🌍 Сменить язык`, (ctx) => {
+//   changeLang(ctx);
+// });
+
+// bot.hears(`🌍 Сменить язык`, (ctx) => {
+//   changeLang(ctx);
+// });
+
+// bot.hears(`🌍 Сменить язык`, (ctx) => {
+//   changeLang(ctx);
+// });
+
+// bot.hears(`🌍 Сменить язык`, (ctx) => {
+//   changeLang(ctx);
+// });
+
+// bot.hears(`🌍 Сменить язык`, (ctx) => {
+//   changeLang(ctx);
+// });
+
+// bot.hears(`🌍 Сменить язык`, (ctx) => {
+//   changeLang(ctx);
+// });
