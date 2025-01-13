@@ -29,7 +29,7 @@ export const changeLang = async (ctx) => {
 export const setLang = async (ctx, lang) => {
   let mainMenuKeys;
 
-  const langMessages = {
+  const messages = {
     uz: `☟ Kereakli bo'limni tanlang:`,
     en: `☟ Select the desired section:`,
     ru: '☟ Выберите нужный раздел:',
@@ -56,7 +56,7 @@ export const setLang = async (ctx, lang) => {
           ctx.from.id,
           ctx.update.callback_query.message.message_id
         );
-        ctx.session.lastMessage = await ctx.reply(langMessages[lang], {
+        await ctx.reply(messages[lang], {
           reply_markup: mainMenuKeys,
         });
       } catch (error) {
@@ -83,7 +83,7 @@ export const setLang = async (ctx, lang) => {
           ctx.from.id,
           ctx.update.callback_query.message.message_id
         );
-        ctx.session.lastMessage = await ctx.reply(langMessages[lang], {
+        ctx.session.lastMessage = await ctx.reply(messages[lang], {
           reply_markup: mainMenuKeys,
         });
       } catch (error) {
@@ -110,7 +110,7 @@ export const setLang = async (ctx, lang) => {
           ctx.from.id,
           ctx.update.callback_query.message.message_id
         );
-        ctx.session.lastMessage = await ctx.reply(langMessages[lang], {
+        await ctx.reply(messages[lang], {
           reply_markup: mainMenuKeys,
         });
       } catch (error) {
