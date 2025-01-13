@@ -2,8 +2,8 @@ import { DataTypes } from 'sequelize';
 import sequelize from '../database/index.js';
 import { User } from './user.model.js';
 
-export const Order = sequelize.define(
-  'Order',
+export const Payment = sequelize.define(
+  'Payments',
   {
     user_id: {
       type: DataTypes.INTEGER,
@@ -13,24 +13,20 @@ export const Order = sequelize.define(
       },
       allowNull: false,
     },
-    game_type: {
+    image_id: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    game_id: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    price: {
+    amount: {
       type: DataTypes.DECIMAL,
       allowNull: false,
     },
   },
   {
     timestamps: true,
-    tableName: 'orders',
+    tableName: 'payments',
   }
 );
 
-Order.belongsTo(User, { as: 'user', foreignKey: 'user_id' });
-User.hasMany(Order, { as: 'orders', foreignKey: 'user_id' });
+Payment.belongsTo(User, { as: 'user', foreignKey: 'user_id' });
+User.hasMany(Payment, { as: 'payments', foreignKey: 'user_id' });

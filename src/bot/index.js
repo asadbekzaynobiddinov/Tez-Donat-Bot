@@ -9,8 +9,9 @@ import {
   changeLang,
   setLang,
   profileCommmand,
-  shopDepartments
+  shopDepartments,
 } from '../commands/index.js';
+import { orderConversation } from '../conversations/order.conversation.js';
 
 config();
 
@@ -26,6 +27,7 @@ bot.use(
 
 bot.use(conversations());
 bot.use(createConversation(registerConversation));
+bot.use(createConversation(orderConversation))
 
 bot.command('start', async (ctx) => {
   startCommand(ctx);
@@ -51,15 +53,19 @@ bot.on('callback_query:data', async (ctx) => {
         break;
       case 'pubg':
       case 'ff':
-      case 'mlbb':
+      case 'mlbb_sng':
+      case 'mlbb_turk':
       case 'clash':
-        shopDepartments(ctx);
+        shopDepartments(ctx, command);
+        break;
+      case 'shop_key':
+        await ctx.conversation.enter('orderConversation');
         break;
       default:
         break;
     }
   } catch (error) {
-    ctx.api.sendMessage('@bots_errors', error.message)
+    ctx.api.sendMessage('@bots_errors', error.message);
   }
 });
 

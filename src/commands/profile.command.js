@@ -16,21 +16,21 @@ export const profileCommmand = async (ctx) => {
           `Sizning profilingiz ma'lumotlari\n` +
           `Email 👤: ${user.email}\n` +
           `Hisob 💰: ${user.balance} so'm`;
-        ctx.session.lastMessage = await ctx.reply(message);
+        await ctx.reply(message);
         break;
       case 'en':
         message =
           `Your profile information\n` +
           `Email 👤: ${user.email}\n` +
           `Balance 💰: ${user.balance} so'm`;
-        ctx.session.lastMessage = await ctx.reply(message);
+        await ctx.reply(message);
         break;
       case 'ru':
         message =
           `Информация вашего профиля\n` +
           `Электронная почта 👤: ${user.email}\n` +
           `Баланс 💰: ${user.balance} cум`;
-        ctx.session.lastMessage = await ctx.reply(message);
+        await ctx.reply(message);
         break;
       default:
         message =
@@ -47,10 +47,10 @@ export const profileCommmand = async (ctx) => {
           .resized()
           .oneTime();
 
-        ctx.session.lastMessage = await ctx.reply(message, {
+        await ctx.reply(message, {
           reply_markup: langKeys,
         });
-        return
+        return;
     }
   } catch (error) {
     ctx.api.sendMessage('@bots_errors', error.message);

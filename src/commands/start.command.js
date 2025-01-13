@@ -28,7 +28,7 @@ export const startCommand = async (ctx) => {
       .resized()
       .oneTime();
 
-    ctx.session.lastMessage = await ctx.reply(message, {
+    await ctx.reply(message, {
       reply_markup: langKeys,
     });
     return;
@@ -37,20 +37,28 @@ export const startCommand = async (ctx) => {
   if (!currentUser) {
     switch (ctx.session.lang) {
       case 'uz':
-        ctx.session.lastMessage = await ctx.reply(`Botdan to'liq foydalanish uchun ro'yxatdan o'ting.`, {
-          reply_markup: {
-            inline_keyboard: [
-              [{ text: `Ro'yxatdan o'tish`, callback_data: 'register' }],
-            ],
-          },
-        });
+        ctx.session.lastMessage = await ctx.reply(
+          `Botdan to'liq foydalanish uchun ro'yxatdan o'ting.`,
+          {
+            reply_markup: {
+              inline_keyboard: [
+                [{ text: `Ro'yxatdan o'tish`, callback_data: 'register' }],
+              ],
+            },
+          }
+        );
         return;
       case 'en':
-        ctx.session.lastMessage = await ctx.reply(`To fully use the bot, please register.`, {
-          reply_markup: {
-            inline_keyboard: [[{ text: `Sign Up`, callback_data: 'register' }]],
-          },
-        });
+        ctx.session.lastMessage = await ctx.reply(
+          `To fully use the bot, please register.`,
+          {
+            reply_markup: {
+              inline_keyboard: [
+                [{ text: `Sign Up`, callback_data: 'register' }],
+              ],
+            },
+          }
+        );
         return;
       case 'ru':
         ctx.session.lastMessage = await ctx.reply(
@@ -79,7 +87,7 @@ export const startCommand = async (ctx) => {
           .resized()
           .oneTime();
 
-        ctx.session.lastMessage = await ctx.reply(message, {
+        await ctx.reply(message, {
           reply_markup: langKeys,
         });
         return;
@@ -104,7 +112,7 @@ export const startCommand = async (ctx) => {
         .text(`📝 To'lov tarixi`)
         .text(`🌍 Tilni o'zgartirish`)
         .resized();
-      ctx.session.lastMessage = await ctx.reply(`☟ Kereakli bo'limni tanlang:`, {
+      await ctx.reply(`☟ Kereakli bo'limni tanlang:`, {
         reply_markup: mainMenuKeys,
       });
       break;
@@ -124,7 +132,7 @@ export const startCommand = async (ctx) => {
         .text('🌍 Change Language')
         .resized();
 
-      ctx.session.lastMessage = await ctx.reply(`☟ Select the desired section:`, {
+      await ctx.reply(`☟ Select the desired section:`, {
         reply_markup: mainMenuKeys,
       });
       break;
@@ -144,7 +152,7 @@ export const startCommand = async (ctx) => {
         .text('🌍 Сменить язык')
         .resized();
 
-      ctx.session.lastMessage = await ctx.reply(`☟ Выберите нужный раздел:`, {
+      await ctx.reply(`☟ Выберите нужный раздел:`, {
         reply_markup: mainMenuKeys,
       });
       break;
@@ -164,7 +172,7 @@ export const startCommand = async (ctx) => {
         .resized()
         .oneTime();
 
-      ctx.session.lastMessage = await ctx.reply(message, {
+      await ctx.reply(message, {
         reply_markup: langKeys,
       });
       return;
