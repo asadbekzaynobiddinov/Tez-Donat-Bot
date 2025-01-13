@@ -1,4 +1,5 @@
 import { InlineKeyboard, Keyboard } from 'grammy';
+import { User } from '../models/index.js';
 
 export const changeLang = async (ctx) => {
   const lang = ctx.session.lang ? ctx.session.lang : ctx.from.language_code;
@@ -35,9 +36,15 @@ export const setLang = async (ctx, lang) => {
     ru: '☟ Выберите нужный раздел:',
   };
 
+  ctx.session.lang = lang;
+
+  await User.update(
+    { language: lang },
+    { where: { telegram_id: ctx.from.id } }
+  );
+
   switch (lang) {
     case 'uz':
-      ctx.session.lang = lang;
       mainMenuKeys = new Keyboard()
         .text(`🛒 Do'kon`)
         .text('👤 Kabinet')
@@ -64,7 +71,6 @@ export const setLang = async (ctx, lang) => {
       }
       break;
     case 'en':
-      ctx.session.lang = lang;
       mainMenuKeys = new Keyboard()
         .text('🛒 Shop')
         .text('👤 Profile')
@@ -91,7 +97,6 @@ export const setLang = async (ctx, lang) => {
       }
       break;
     case 'ru':
-      ctx.session.lang = lang;
       mainMenuKeys = new Keyboard()
         .text('🛒 Магазин')
         .text('👤 Профиль')

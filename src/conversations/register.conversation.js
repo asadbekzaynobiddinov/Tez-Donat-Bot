@@ -260,6 +260,7 @@ export const registerConversation = async (conversation, ctx) => {
     password,
     phone_number: phone_number || 'unknown',
     balance,
+    language: ctx.session.lang,
   };
 
   try {

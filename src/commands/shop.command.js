@@ -5,6 +5,7 @@ import {
   mobileLegendsSng,
   pubg,
 } from '../inline-keys/index.js';
+import { User, Order } from '../models/index.js';
 
 export const shopCommand = async (ctx) => {
   const message = {
@@ -122,6 +123,192 @@ export const shopDepartments = async (ctx, command) => {
         ctx.from.id,
         ctx.update.callback_query.message.message_id
       );
+    }
+  } catch (error) {
+    ctx.api.sendMessage('@bots_errors', error.message);
+  }
+};
+
+export const buyOrder = async (ctx) => {
+  try {
+    const [, id] = ctx.update.callback_query.data.split('=');
+    const order = await Order.findOne({ where: { id } });
+    const user = await User.findOne({ where: { id: order.user_id } });
+
+    user.balance -= order.price;
+    user.save();
+
+    const messages = {
+      uz: '✅: Buyurtma qabul qilindi',
+      en: '✅: Order accepted',
+      ru: '✅: Заказ принят',
+    };
+
+    await ctx.api.editMessageText(
+      ctx.from.id,
+      ctx.update.callback_query.message.message_id,
+      `🎮: <b>${order.game_type.split('_')[0]}</b>\n` +
+        `🆔: <code>${order.game_id}</code>\n` +
+        `💸: ${order.amount}\n` +
+        `💵: ${order.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm\n` +
+        `${messages[ctx.session.lang]}`,
+      {
+        parse_mode: 'HTML',
+      }
+    );
+
+    await ctx.api.sendMessage(
+      '@tez_donat_buyurtmalar',
+      `👤: ${user.email} \n` +
+        `🎮: <b>${order.game_type}</b>\n` +
+        `🆔: <code>${order.game_id}</code>\n` +
+        `💸: ${order.amount}\n` +
+        `💵: ${order.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm\n` +
+        `🆕: Yangi buyurtma`,
+      {
+        parse_mode: 'HTML',
+        reply_markup: {
+          inline_keyboard: [
+            [
+              { text: `✅ To'lab berdim`, callback_data: `paid=${order.id}` },
+              {
+                text: `❌ Bekor qildim`,
+                callback_data: `did_not_pay=${order.id}`,
+              },
+            ],
+          ],
+        },
+      }
+    );
+  } catch (error) {
+    ctx.api.sendMessage('@bots_errors', error.message);
+  }
+};
+
+export const cancelOrder = async (ctx) => {
+  try {
+    const [, id] = ctx.update.callback_query.data.split('=');
+    const order = await Order.findOne({ where: { id } });
+
+    const messages = {
+      uz: '❌: Buyurtma bekor qilindi',
+      en: '❌: Order canceled',
+      ru: '❌: Заказ отменён',
+    };
+
+    await ctx.api.editMessageText(
+      ctx.from.id,
+      ctx.update.callback_query.message.message_id,
+      `🎮: <b>${order.game_type.split('_')[0]}</b>\n` +
+        `🆔: <code>${order.game_id}</code>\n` +
+        `💸: ${order.amount}\n` +
+        `💵: ${order.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm\n` +
+        `${messages[ctx.session.lang]}`,
+      {
+        parse_mode: 'HTML',
+      }
+    );
+
+    await order.destroy();
+  } catch (error) {
+    ctx.api.sendMessage('@bots_errors', error.message);
+  }
+};
+
+export const paidCommand = async (ctx) => {
+  try {
+    const [, id] = ctx.update.callback_query.data.split('=');
+    const order = await Order.findOne({ where: { id } });
+    const user = await User.findOne({ where: { id: order.user_id } });
+    const admin = await User.findOne({ where: { telegram_id: ctx.from.id } });
+
+    const messages = {
+      uz: `✅: Buyurtmangizni to'lab berdik`,
+      en: '✅: Your order has been paid',
+      ru: '✅: Ваш заказ оплачен',
+    };
+
+    if (admin.role == 'admin') {
+      await ctx.api.editMessageText(
+        '@tez_donat_buyurtmalar',
+        ctx.update.callback_query.message.message_id,
+        `👤: ${user.email} \n` +
+          `🎮: <b>${order.game_type}</b>\n` +
+          `🆔: <code>${order.game_id}</code>\n` +
+          `💸: ${order.amount}\n` +
+          `💵: ${order.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm\n` +
+          `✅: To'lab berildi.`,
+        {
+          parse_mode: 'HTML',
+        }
+      );
+
+      await ctx.api.sendMessage(
+        user.telegram_id,
+        `🎮: <b>${order.game_type.split('_')[0]}</b>\n` +
+          `🆔: <code>${order.game_id}</code>\n` +
+          `💸: ${order.amount}\n` +
+          `💵: ${order.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm\n` +
+          `${messages[user.language]}`,
+        {
+          parse_mode: 'HTML',
+        }
+      );
+    } else {
+      ctx.answerCallbackQuery({
+        text: `Sizda "Admin" huquqlari mvjud emas`,
+        show_alert: true,
+      });
+    }
+  } catch (error) {
+    ctx.api.sendMessage('@bots_errors', error.message);
+  }
+};
+
+export const didNotPayCommand = async (ctx) => {
+  try {
+    const [, id] = ctx.update.callback_query.data.split('=');
+    const order = await Order.findOne({ where: { id } });
+    const user = await User.findOne({ where: { id: order.user_id } });
+    const admin = await User.findOne({ where: { telegram_id: ctx.from.id } });
+
+    const messages = {
+      uz: `❌: Buyurtmangizni bekor qildik`,
+      en: '❌: Your order has been canceled',
+      ru: '❌: Ваш заказ был отменён',
+    };
+
+    if (admin.role == 'admin') {
+      await ctx.api.editMessageText(
+        '@tez_donat_buyurtmalar',
+        ctx.update.callback_query.message.message_id,
+        `👤: ${user.email} \n` +
+          `🎮: <b>${order.game_type}</b>\n` +
+          `🆔: <code>${order.game_id}</code>\n` +
+          `💸: ${order.amount}\n` +
+          `💵: ${order.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm\n` +
+          `❌: Bekor qilindi.`,
+        {
+          parse_mode: 'HTML',
+        }
+      );
+
+      await ctx.api.sendMessage(
+        user.telegram_id,
+        `🎮: <b>${order.game_type.split('_')[0]}</b>\n` +
+          `🆔: <code>${order.game_id}</code>\n` +
+          `💸: ${order.amount}\n` +
+          `💵: ${order.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm\n` +
+          `${messages[user.language]}`,
+        {
+          parse_mode: 'HTML',
+        }
+      );
+    } else {
+      ctx.answerCallbackQuery({
+        text: `Sizda "Admin" huquqlari mvjud emas`,
+        show_alert: true,
+      });
     }
   } catch (error) {
     ctx.api.sendMessage('@bots_errors', error.message);
