@@ -27,7 +27,7 @@ bot.use(
 
 bot.use(conversations());
 bot.use(createConversation(registerConversation));
-bot.use(createConversation(orderConversation))
+bot.use(createConversation(orderConversation));
 
 bot.command('start', async (ctx) => {
   startCommand(ctx);

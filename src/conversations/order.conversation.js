@@ -5,7 +5,7 @@ export const orderConversation = async (conversations, ctx) => {
       ctx.session.lastMessage.message_id ==
         ctx.update.callback_query.message.message_id
     ) {
-      console.log(ctx)
+      console.log(ctx);
     } else {
       ctx.api.deleteMessage(
         ctx.from.id,
@@ -15,4 +15,4 @@ export const orderConversation = async (conversations, ctx) => {
   } catch (error) {
     ctx.api.sendMessage('@bots_errors', error.message);
   }
-}
+};

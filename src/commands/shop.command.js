@@ -1,5 +1,10 @@
 import { InlineKeyboard, Keyboard } from 'grammy';
-import { freeFire, mobileLegendsTurk, mobileLegendsSng, pubg } from '../inline-keys/index.js';
+import {
+  freeFire,
+  mobileLegendsTurk,
+  mobileLegendsSng,
+  pubg,
+} from '../inline-keys/index.js';
 
 export const shopCommand = async (ctx) => {
   const message = {
@@ -97,17 +102,17 @@ export const shopDepartments = async (ctx, command) => {
             {
               reply_markup: mobileLegendsSng,
             }
-          )
+          );
           break;
         case 'mlbb_turk':
-        await ctx.api.editMessageText(
-          ctx.from.id,
-          ctx.update.callback_query.message.message_id,
-          messages[ctx.session.lang],
-          {
-            reply_markup: mobileLegendsTurk,
-          }
-        )
+          await ctx.api.editMessageText(
+            ctx.from.id,
+            ctx.update.callback_query.message.message_id,
+            messages[ctx.session.lang],
+            {
+              reply_markup: mobileLegendsTurk,
+            }
+          );
           break;
         default:
           break;
