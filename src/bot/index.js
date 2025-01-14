@@ -20,6 +20,8 @@ import {
   didNotPayCommand,
   startPayment,
   paymentDepartments,
+  acceptPayment,
+  rejectPaynment,
 } from '../commands/index.js';
 import { User } from '../models/index.js';
 
@@ -87,6 +89,12 @@ bot.on('callback_query:data', async (ctx) => {
       case 'ru-uz':
       case 'uz-uz':
         paymentDepartments(ctx);
+        break;
+      case 'accept':
+        acceptPayment(ctx);
+        break;
+      case 'reject':
+        rejectPaynment(ctx);
         break;
       default:
         break;
