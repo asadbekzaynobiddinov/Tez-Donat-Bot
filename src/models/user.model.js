@@ -63,6 +63,10 @@ export const User = sequelize.define(
       type: DataTypes.ENUM(Object.values(UserLanguages)),
       allowNull: true,
     },
+    payment_status: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   },
   {
     tableName: 'users',

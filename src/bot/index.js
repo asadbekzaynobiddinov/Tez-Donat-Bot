@@ -5,6 +5,7 @@ import { config } from 'dotenv';
 import {
   registerConversation,
   orderConversation,
+  paymentConversation,
 } from '../conversations/index.js';
 import {
   startCommand,
@@ -17,6 +18,8 @@ import {
   cancelOrder,
   paidCommand,
   didNotPayCommand,
+  startPayment,
+  paymentDepartments,
 } from '../commands/index.js';
 import { User } from '../models/index.js';
 
@@ -35,6 +38,7 @@ bot.use(
 bot.use(conversations());
 bot.use(createConversation(registerConversation));
 bot.use(createConversation(orderConversation));
+bot.use(createConversation(paymentConversation));
 
 bot.command('start', async (ctx) => {
   startCommand(ctx);
@@ -80,11 +84,15 @@ bot.on('callback_query:data', async (ctx) => {
       case 'did_not_pay':
         didNotPayCommand(ctx);
         break;
+      case 'ru-uz':
+      case 'uz-uz':
+        paymentDepartments(ctx);
+        break;
       default:
         break;
     }
   } catch (error) {
-    ctx.api.sendMessage('@bots_errors', error.message);
+    ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
   }
 });
 
@@ -151,17 +159,17 @@ bot.hears(`👤 Профиль`, (ctx) => {
   profileCommmand(ctx);
 });
 
-// bot.hears(`🌍 Сменить язык`, (ctx) => {
-//   changeLang(ctx);
-// });
+bot.hears(`💰 Xisob to'ldirish`, (ctx) => {
+  startPayment(ctx);
+});
 
-// bot.hears(`🌍 Сменить язык`, (ctx) => {
-//   changeLang(ctx);
-// });
+bot.hears(`💰 Recharge Account`, (ctx) => {
+  startPayment(ctx);
+});
 
-// bot.hears(`🌍 Сменить язык`, (ctx) => {
-//   changeLang(ctx);
-// });
+bot.hears(`💰 Пополнение счета`, (ctx) => {
+  startPayment(ctx);
+});
 
 // bot.hears(`🌍 Сменить язык`, (ctx) => {
 //   changeLang(ctx);

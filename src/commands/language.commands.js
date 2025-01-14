@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { InlineKeyboard, Keyboard } from 'grammy';
 import { User } from '../models/index.js';
 
@@ -23,7 +24,7 @@ export const changeLang = async (ctx) => {
     });
     return;
   } catch (error) {
-    ctx.api.sendMessage('@bots_errors', error.message);
+    ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
   }
 };
 
@@ -63,11 +64,11 @@ export const setLang = async (ctx, lang) => {
           ctx.from.id,
           ctx.update.callback_query.message.message_id
         );
-        await ctx.reply(messages[lang], {
+        ctx.session.lastMessage = await ctx.reply(messages[lang], {
           reply_markup: mainMenuKeys,
         });
       } catch (error) {
-        ctx.api.sendMessage('@bots_errors', error.message);
+        ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
       }
       break;
     case 'en':
@@ -93,7 +94,7 @@ export const setLang = async (ctx, lang) => {
           reply_markup: mainMenuKeys,
         });
       } catch (error) {
-        ctx.api.sendMessage('@bots_errors', error.message);
+        ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
       }
       break;
     case 'ru':
@@ -115,11 +116,11 @@ export const setLang = async (ctx, lang) => {
           ctx.from.id,
           ctx.update.callback_query.message.message_id
         );
-        await ctx.reply(messages[lang], {
+        ctx.session.lastMessage = await ctx.reply(messages[lang], {
           reply_markup: mainMenuKeys,
         });
       } catch (error) {
-        ctx.api.sendMessage('@bots_errors', error.message);
+        ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
       }
       break;
     default:

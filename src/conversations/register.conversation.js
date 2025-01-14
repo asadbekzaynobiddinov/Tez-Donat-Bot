@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-constant-condition */
 import { Keyboard } from 'grammy';
 import { User, Promocode } from '../models/index.js';
@@ -30,7 +31,9 @@ export const registerConversation = async (conversation, ctx) => {
         const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 
         if (!email || !emailRegex.test(email)) {
-          await ctx.reply(`Emailni to'g'ri formatda kiriting 🤦🏻‍♂️`);
+          ctx.session.lastMessage = await ctx.reply(
+            `Emailni to'g'ri formatda kiriting 🤦🏻‍♂️`
+          );
           continue;
         }
 
@@ -38,11 +41,13 @@ export const registerConversation = async (conversation, ctx) => {
         if (currentUser.length === 0) {
           break;
         } else {
-          await ctx.reply('Bu email band qilingan 😔.\nBoshqa kiriting:');
+          ctx.session.lastMessage = await ctx.reply(
+            'Bu email band qilingan 😔.\nBoshqa kiriting:'
+          );
         }
       } while (true);
 
-      await ctx.reply(
+      ctx.session.lastMessage = await ctx.reply(
         `Yaxshi. 🤙🏻\nEndi esa yodda qolarli parol o'ylab toping. 🔒\nParol kamida 6 ta belgidan iborat bo'lsin.`
       );
 
@@ -63,7 +68,7 @@ export const registerConversation = async (conversation, ctx) => {
         .oneTime()
         .resized();
 
-      await ctx.reply(
+      ctx.session.lastMessage = await ctx.reply(
         'Barakalla. 👍🏻\nEndi <b>Telefon raqamni ulashish 📲</b> tugmasini bosing:',
         {
           parse_mode: 'HTML',
@@ -74,7 +79,7 @@ export const registerConversation = async (conversation, ctx) => {
       contactMessage = await conversation.wait();
       phone_number = contactMessage.message.contact.phone_number;
 
-      await ctx.reply(
+      ctx.session.lastMessage = await ctx.reply(
         `Ajoyib. 👌🏻\nEndi asosiy qism. \nPromokod bo'lsa kiriting 🎟️\nYo'q bo'lsa shunchaki yo'q deng. 🤫`
       );
 
@@ -97,7 +102,9 @@ export const registerConversation = async (conversation, ctx) => {
         const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 
         if (!email || !emailRegex.test(email)) {
-          await ctx.reply(`Please enter a valid email format 🤦🏻‍♂️`);
+          ctx.session.lastMessage = await ctx.reply(
+            `Please enter a valid email format 🤦🏻‍♂️`
+          );
           continue;
         }
 
@@ -111,7 +118,7 @@ export const registerConversation = async (conversation, ctx) => {
         }
       } while (true);
 
-      await ctx.reply(
+      ctx.session.lastMessage = await ctx.reply(
         'Great. 🤙🏻\nNow think of a memorable password. 🔒\nThe password must be at least 6 characters long.'
       );
 
@@ -121,7 +128,9 @@ export const registerConversation = async (conversation, ctx) => {
         if (!password || password.length >= 6) {
           break;
         } else {
-          await ctx.reply('The password must be at least 6 characters long 🤦🏻‍♂️');
+          ctx.session.lastMessage = await ctx.reply(
+            'The password must be at least 6 characters long 🤦🏻‍♂️'
+          );
         }
       } while (true);
 
@@ -130,7 +139,7 @@ export const registerConversation = async (conversation, ctx) => {
         .oneTime()
         .resized();
 
-      await ctx.reply(
+      ctx.session.lastMessage = await ctx.reply(
         'Well done. 👍🏻\nNow press the <b>Share phone number 📲</b> button:',
         {
           parse_mode: 'HTML',
@@ -141,7 +150,7 @@ export const registerConversation = async (conversation, ctx) => {
       contactMessage = await conversation.wait();
       phone_number = contactMessage.message.contact.phone_number;
 
-      await ctx.reply(
+      ctx.session.lastMessage = await ctx.reply(
         'Excellent. 👌🏻\nNow the main part. \nIf you have a promo code, enter it 🎟️\nIf not, simply say no. 🤫'
       );
 
@@ -174,7 +183,9 @@ export const registerConversation = async (conversation, ctx) => {
         if (currentUser.length === 0) {
           break;
         } else {
-          await ctx.reply('Этот email уже занят 😔.\nВведите другой:');
+          ctx.session.lastMessage = await ctx.reply(
+            'Этот email уже занят 😔.\nВведите другой:'
+          );
         }
       } while (true);
 
@@ -184,7 +195,9 @@ export const registerConversation = async (conversation, ctx) => {
         if (!password || password.length >= 6) {
           break;
         } else {
-          await ctx.reply('Пароль должен содержать минимум 6 символов 🤦🏻‍♂️');
+          ctx.session.lastMessage = await ctx.reply(
+            'Пароль должен содержать минимум 6 символов 🤦🏻‍♂️'
+          );
         }
       } while (true);
 
@@ -193,7 +206,7 @@ export const registerConversation = async (conversation, ctx) => {
         .oneTime()
         .resized();
 
-      await ctx.reply(
+      ctx.session.lastMessage = await ctx.reply(
         'Отлично. 👍🏻\nТеперь нажмите кнопку <b>Поделиться номером телефона 📲</b>:',
         {
           parse_mode: 'HTML',
@@ -204,7 +217,7 @@ export const registerConversation = async (conversation, ctx) => {
       contactMessage = await conversation.wait();
       phone_number = contactMessage.message.contact.phone_number;
 
-      await ctx.reply(
+      ctx.session.lastMessage = await ctx.reply(
         'Прекрасно. 👌🏻\nТеперь основная часть. \nЕсли у вас есть промокод, введите его 🎟️\nЕсли нет, просто скажите «нет» 🤫'
       );
 
@@ -228,7 +241,7 @@ export const registerConversation = async (conversation, ctx) => {
         .resized()
         .oneTime();
 
-      await ctx.reply(langMessage, {
+      ctx.session.lastMessage = await ctx.reply(langMessage, {
         reply_markup: langKeys,
       });
       return;
@@ -240,7 +253,7 @@ export const registerConversation = async (conversation, ctx) => {
   try {
     thisPromocode = await Promocode.findOne({ where: { content: promocode } });
   } catch (error) {
-    ctx.api.sendMessage('@bots_errors', error.message);
+    ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
   }
 
   let balance = 0;
@@ -266,7 +279,7 @@ export const registerConversation = async (conversation, ctx) => {
   try {
     await User.create(currentUser);
   } catch (error) {
-    ctx.api.sendMessage('@bots_errors', error.message);
+    ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
   }
   startCommand(ctx);
 };
