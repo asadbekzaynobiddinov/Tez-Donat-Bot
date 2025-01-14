@@ -6,6 +6,12 @@ const UserRoles = {
   admin: 'admin',
 };
 
+const UserLanguages = {
+  uz: 'uz',
+  en: 'en',
+  ru: 'ru',
+};
+
 export const User = sequelize.define(
   'User',
   {
@@ -52,6 +58,14 @@ export const User = sequelize.define(
     role: {
       type: DataTypes.ENUM(Object.values(UserRoles)),
       defaultValue: UserRoles.user,
+    },
+    language: {
+      type: DataTypes.ENUM(Object.values(UserLanguages)),
+      allowNull: true,
+    },
+    payment_status: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
   },
   {

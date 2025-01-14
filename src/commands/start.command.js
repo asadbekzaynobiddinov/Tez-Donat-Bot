@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { Keyboard } from 'grammy';
 import { User } from '../models/index.js';
 
@@ -7,7 +8,7 @@ export const startCommand = async (ctx) => {
   try {
     currentUser = await User.findOne({ where: { telegram_id: ctx.from.id } });
   } catch (error) {
-    ctx.api.sendMessage('@bots_errors', error.message);
+    ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
   }
 
   if (!ctx.session.lang) {
@@ -28,7 +29,7 @@ export const startCommand = async (ctx) => {
       .resized()
       .oneTime();
 
-    await ctx.reply(message, {
+    ctx.session.lastMessage = await ctx.reply(message, {
       reply_markup: langKeys,
     });
     return;
@@ -72,32 +73,14 @@ export const startCommand = async (ctx) => {
           }
         );
         return;
-      default: {
-        const message =
-          `Kerakli tilni tanlang: 🇺🇿\n` +
-          'Choose your language: 🇺🇸\n' +
-          'Выберите язык: 🇷🇺';
-
-        const langKeys = new Keyboard()
-          .text(`O'zbek 🇺🇿`)
-          .row()
-          .text(`English 🇺🇸`)
-          .row()
-          .text(`Русский 🇷🇺`)
-          .resized()
-          .oneTime();
-
-        await ctx.reply(message, {
-          reply_markup: langKeys,
-        });
+      default:
         return;
-      }
     }
   }
 
   let mainMenuKeys;
 
-  switch (ctx.session.lang) {
+  switch (currentUser.language) {
     case 'uz':
       mainMenuKeys = new Keyboard()
         .text(`🛒 Do'kon`)
@@ -112,9 +95,12 @@ export const startCommand = async (ctx) => {
         .text(`📝 To'lov tarixi`)
         .text(`🌍 Tilni o'zgartirish`)
         .resized();
-      await ctx.reply(`☟ Kereakli bo'limni tanlang:`, {
-        reply_markup: mainMenuKeys,
-      });
+      ctx.session.lastMessage = await ctx.reply(
+        `☟ Kereakli bo'limni tanlang:`,
+        {
+          reply_markup: mainMenuKeys,
+        }
+      );
       break;
 
     case 'en':
@@ -132,9 +118,12 @@ export const startCommand = async (ctx) => {
         .text('🌍 Change Language')
         .resized();
 
-      await ctx.reply(`☟ Select the desired section:`, {
-        reply_markup: mainMenuKeys,
-      });
+      ctx.session.lastMessage = await ctx.reply(
+        `☟ Select the desired section:`,
+        {
+          reply_markup: mainMenuKeys,
+        }
+      );
       break;
 
     case 'ru':
@@ -152,31 +141,13 @@ export const startCommand = async (ctx) => {
         .text('🌍 Сменить язык')
         .resized();
 
-      await ctx.reply(`☟ Выберите нужный раздел:`, {
+      ctx.session.lastMessage = await ctx.reply(`☟ Выберите нужный раздел:`, {
         reply_markup: mainMenuKeys,
       });
       break;
 
-    default: {
-      const message =
-        `Kerakli tilni tanlang: 🇺🇿\n` +
-        'Choose your language: 🇺🇸\n' +
-        'Выберите язык: 🇷🇺';
-
-      const langKeys = new Keyboard()
-        .text(`O'zbek 🇺🇿`)
-        .row()
-        .text(`English 🇺🇸`)
-        .row()
-        .text(`Русский 🇷🇺`)
-        .resized()
-        .oneTime();
-
-      await ctx.reply(message, {
-        reply_markup: langKeys,
-      });
-      return;
-    }
+    default:
+      break;
   }
   return;
 };

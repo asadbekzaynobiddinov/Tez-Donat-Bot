@@ -2,7 +2,11 @@
 import { Bot, session } from 'grammy';
 import { conversations, createConversation } from '@grammyjs/conversations';
 import { config } from 'dotenv';
-import { registerConversation } from '../conversations/index.js';
+import {
+  registerConversation,
+  orderConversation,
+  paymentConversation,
+} from '../conversations/index.js';
 import {
   startCommand,
   shopCommand,
@@ -10,8 +14,14 @@ import {
   setLang,
   profileCommmand,
   shopDepartments,
+  buyOrder,
+  cancelOrder,
+  paidCommand,
+  didNotPayCommand,
+  startPayment,
+  paymentDepartments,
 } from '../commands/index.js';
-import { orderConversation } from '../conversations/order.conversation.js';
+import { User } from '../models/index.js';
 
 config();
 
@@ -28,6 +38,7 @@ bot.use(
 bot.use(conversations());
 bot.use(createConversation(registerConversation));
 bot.use(createConversation(orderConversation));
+bot.use(createConversation(paymentConversation));
 
 bot.command('start', async (ctx) => {
   startCommand(ctx);
@@ -61,26 +72,54 @@ bot.on('callback_query:data', async (ctx) => {
       case 'shop_key':
         await ctx.conversation.enter('orderConversation');
         break;
+      case 'buy':
+        buyOrder(ctx);
+        break;
+      case 'cancel':
+        cancelOrder(ctx);
+        break;
+      case 'paid':
+        paidCommand(ctx);
+        break;
+      case 'did_not_pay':
+        didNotPayCommand(ctx);
+        break;
+      case 'ru-uz':
+      case 'uz-uz':
+        paymentDepartments(ctx);
+        break;
       default:
         break;
     }
   } catch (error) {
-    ctx.api.sendMessage('@bots_errors', error.message);
+    ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
   }
 });
 
-bot.hears(`O'zbek 🇺🇿`, (ctx) => {
+bot.hears(`O'zbek 🇺🇿`, async (ctx) => {
   ctx.session.lang = 'uz';
+  await User.update(
+    { language: 'uz' },
+    { where: { telegram_id: ctx.from.id } }
+  );
   startCommand(ctx);
 });
 
-bot.hears(`English 🇺🇸`, (ctx) => {
+bot.hears(`English 🇺🇸`, async (ctx) => {
   ctx.session.lang = 'en';
+  await User.update(
+    { language: 'en' },
+    { where: { telegram_id: ctx.from.id } }
+  );
   startCommand(ctx);
 });
 
-bot.hears(`Русский 🇷🇺`, (ctx) => {
+bot.hears(`Русский 🇷🇺`, async (ctx) => {
   ctx.session.lang = 'ru';
+  await User.update(
+    { language: 'ru' },
+    { where: { telegram_id: ctx.from.id } }
+  );
   startCommand(ctx);
 });
 
@@ -120,17 +159,17 @@ bot.hears(`👤 Профиль`, (ctx) => {
   profileCommmand(ctx);
 });
 
-// bot.hears(`🌍 Сменить язык`, (ctx) => {
-//   changeLang(ctx);
-// });
+bot.hears(`💰 Xisob to'ldirish`, (ctx) => {
+  startPayment(ctx);
+});
 
-// bot.hears(`🌍 Сменить язык`, (ctx) => {
-//   changeLang(ctx);
-// });
+bot.hears(`💰 Recharge Account`, (ctx) => {
+  startPayment(ctx);
+});
 
-// bot.hears(`🌍 Сменить язык`, (ctx) => {
-//   changeLang(ctx);
-// });
+bot.hears(`💰 Пополнение счета`, (ctx) => {
+  startPayment(ctx);
+});
 
 // bot.hears(`🌍 Сменить язык`, (ctx) => {
 //   changeLang(ctx);

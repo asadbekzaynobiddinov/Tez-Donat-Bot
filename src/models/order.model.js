@@ -25,6 +25,14 @@ export const Order = sequelize.define(
       type: DataTypes.DECIMAL,
       allowNull: false,
     },
+    amount: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    other: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     timestamps: true,

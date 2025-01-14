@@ -1,4 +1,6 @@
+/* eslint-disable no-undef */
 import { InlineKeyboard, Keyboard } from 'grammy';
+import { User } from '../models/index.js';
 
 export const changeLang = async (ctx) => {
   const lang = ctx.session.lang ? ctx.session.lang : ctx.from.language_code;
@@ -22,7 +24,7 @@ export const changeLang = async (ctx) => {
     });
     return;
   } catch (error) {
-    ctx.api.sendMessage('@bots_errors', error.message);
+    ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
   }
 };
 
@@ -35,9 +37,15 @@ export const setLang = async (ctx, lang) => {
     ru: '☟ Выберите нужный раздел:',
   };
 
+  ctx.session.lang = lang;
+
+  await User.update(
+    { language: lang },
+    { where: { telegram_id: ctx.from.id } }
+  );
+
   switch (lang) {
     case 'uz':
-      ctx.session.lang = lang;
       mainMenuKeys = new Keyboard()
         .text(`🛒 Do'kon`)
         .text('👤 Kabinet')
@@ -56,15 +64,14 @@ export const setLang = async (ctx, lang) => {
           ctx.from.id,
           ctx.update.callback_query.message.message_id
         );
-        await ctx.reply(messages[lang], {
+        ctx.session.lastMessage = await ctx.reply(messages[lang], {
           reply_markup: mainMenuKeys,
         });
       } catch (error) {
-        ctx.api.sendMessage('@bots_errors', error.message);
+        ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
       }
       break;
     case 'en':
-      ctx.session.lang = lang;
       mainMenuKeys = new Keyboard()
         .text('🛒 Shop')
         .text('👤 Profile')
@@ -87,11 +94,10 @@ export const setLang = async (ctx, lang) => {
           reply_markup: mainMenuKeys,
         });
       } catch (error) {
-        ctx.api.sendMessage('@bots_errors', error.message);
+        ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
       }
       break;
     case 'ru':
-      ctx.session.lang = lang;
       mainMenuKeys = new Keyboard()
         .text('🛒 Магазин')
         .text('👤 Профиль')
@@ -110,11 +116,11 @@ export const setLang = async (ctx, lang) => {
           ctx.from.id,
           ctx.update.callback_query.message.message_id
         );
-        await ctx.reply(messages[lang], {
+        ctx.session.lastMessage = await ctx.reply(messages[lang], {
           reply_markup: mainMenuKeys,
         });
       } catch (error) {
-        ctx.api.sendMessage('@bots_errors', error.message);
+        ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
       }
       break;
     default:

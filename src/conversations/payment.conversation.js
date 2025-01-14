@@ -1,0 +1,126 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-constant-condition */
+import { Payment, User } from '../models/index.js';
+import {
+  profileCommmand,
+  startCommand,
+  shopCommand,
+  changeLang,
+  startPayment,
+} from '../commands/index.js';
+
+export const paymentConversation = async (conversation, ctx) => {
+  try {
+    const user = await User.findOne({ where: { telegram_id: ctx.from.id } });
+
+    const message1 = {
+      uz: [
+        "tepadagi kartaga to'lov qilganingizdan so'ng.\n\n" +
+          "— jo'natgan pulingizni YOZMA ko'rinishda yuboring. " +
+          "Nuqta(.) vergul(,) ishlatmasdan jo'nating, " +
+          "na'muna: 10000",
+        "Iltimos, to'g'ri summa kiriting (faqat raqam, (.) va (,) siz).",
+      ],
+      en: [
+        'After making the payment to the card above.\n\n' +
+          '— Send the amount you transferred in WRITTEN form. ' +
+          'Do not use a period (.) or comma (,), ' +
+          'example: 10000',
+        'Please enter the correct amount (numbers only, without (.) or (,)).',
+      ],
+      ru: [
+        'После оплаты на указанную карту.\n\n' +
+          '— Отправьте сумму перевода в ПИСЬМЕННОМ виде. ' +
+          'Не используйте точку (.) или запятую (,), ' +
+          'пример: 10000',
+        'Пожалуйста, введите правильную сумму (только цифры, без (.) или (,)).',
+      ],
+    };
+    const message2 = {
+      uz: [
+        "Endi esa to'lov skrenshotini jo'nating.\nPDF yoki boshqa format qabul qilinmaydi.",
+        'Iltimos, rasm yuboring.',
+      ],
+      en: [
+        'Now, please send the payment screenshot.\nPDF or other formats are not accepted.',
+        'Please send a picture.',
+      ],
+      ru: [
+        'Теперь отправьте скриншот оплаты.\nPDF или другие форматы не принимаются.',
+        'Пожалуйста, отправьте изображение.',
+      ],
+    };
+
+    ctx.session.lastMessage = await ctx.reply(message1[user.language][0]);
+
+    let amount;
+
+    do {
+      const { message } = await conversation.wait();
+      amount = message.text;
+
+      switch (amount) {
+        case '/start':
+          startCommand(ctx);
+          return;
+        case `🛒 Do'kon`:
+        case '🛒 Shop':
+        case '🛒 Магазин':
+          shopCommand(ctx);
+          return;
+        case `🌍 Tilni o'zgartirish`:
+        case '🌍 Change Language':
+        case '🌍 Сменить язык':
+          changeLang(ctx);
+          return;
+        case '👤 Kabinet':
+        case '👤 Profile':
+        case '👤 Профиль':
+          profileCommmand(ctx);
+          return;
+        case `💰 Xisob to'ldirish`:
+        case '💰 Recharge Account':
+        case '💰 Пополнение счета':
+          startPayment(ctx);
+          return;
+      }
+
+      if (
+        isNaN(amount) ||
+        amount <= 0 ||
+        amount.includes('.') ||
+        amount.includes(',')
+      ) {
+        ctx.session.lastMessage = await ctx.reply(message1[user.language][1]);
+      } else {
+        break;
+      }
+    } while (true);
+
+    ctx.session.lastMessage = await ctx.reply(message2[user.language][0]);
+    let fileId;
+    do {
+      const { message } = await conversation.wait();
+
+      if (message.photo && message.photo.length > 0) {
+        const photo = message.photo;
+        const largestPhoto = photo[photo.length - 1];
+        fileId = largestPhoto.file_id;
+        break;
+      } else {
+        ctx.session.lastMessage = await ctx.reply(message2[user.language][1]);
+      }
+    } while (true);
+
+    const newPayment = {
+      user_id: user.id,
+      image_id: fileId,
+      amount,
+    };
+
+    await Payment.create(newPayment);
+  } catch (error) {
+    console.log(error);
+    ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
+  }
+};
