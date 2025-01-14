@@ -116,6 +116,7 @@ export const acceptPayment = async (ctx) => {
     await User.update(
       {
         balance: newBalance,
+        payment_status: false
       },
       {
         where: { id: payment.user_id },
@@ -177,6 +178,13 @@ export const rejectPaynment = async (ctx) => {
       ],
     };
 
+    await User.update(
+      {
+        payment_status: false,
+      },
+      { where: { id: user.id } }
+    )
+
     await ctx.api.sendMessage(
       user.telegram_id,
       `${messages[user.language][0]}\n${messages[user.language][1]}: ${user.email}\n${messages[user.language][2]}: ${user.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm`
@@ -187,7 +195,7 @@ export const rejectPaynment = async (ctx) => {
       ctx.update.callback_query.message.message_id, {
         caption: `Email: ${user.email}\n` +
         `Telefon: ${user.phone_number}\n` +
-        `Miqdor: ${payment.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm` +
+        `Miqdor: ${payment.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm\n` +
         `❌: Bekor qilingan`
       }
     );

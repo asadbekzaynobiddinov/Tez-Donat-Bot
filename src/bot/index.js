@@ -22,6 +22,7 @@ import {
   paymentDepartments,
   acceptPayment,
   rejectPaynment,
+  backKey,
 } from '../commands/index.js';
 import { User } from '../models/index.js';
 
@@ -95,6 +96,9 @@ bot.on('callback_query:data', async (ctx) => {
         break;
       case 'reject':
         rejectPaynment(ctx);
+        break;
+      case 'back':
+        backKey(ctx);
         break;
       default:
         break;

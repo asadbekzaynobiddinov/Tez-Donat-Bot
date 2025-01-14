@@ -49,7 +49,7 @@ export const shopDepartments = async (ctx, command) => {
 
       switch (command) {
         case 'pubg':
-          await ctx.api.editMessageText(
+          ctx.session.lastMessage = await ctx.api.editMessageText(
             ctx.from.id,
             ctx.update.callback_query.message.message_id,
             messages[user.language],
@@ -297,3 +297,42 @@ export const didNotPayCommand = async (ctx) => {
     ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
   }
 };
+
+
+export const backKey = async (ctx) => {
+  try {
+    const user = await User.findOne({ where: { telegram_id: ctx.from.id }})
+    const messages = {
+      uz: `☟ Kereakli bo'limni tanlang:`,
+      en: `☟ Select the desired section:`,
+      ru: '☟ Выберите нужный раздел:',
+    };
+    const keys = new InlineKeyboard()
+    .text('PUBG MOBILE', 'pubg')
+    .text('FREE FIRE', 'ff')
+    .row()
+    .text('MOBILE LEGENDS SNG', 'mlbb_sng')
+    .row()
+    .text('MOBILE LEGENDS TURK', 'mlbb_turk');
+
+    if (
+      ctx.session.lastMessage &&
+      ctx.session.lastMessage.message_id !=
+        ctx.update.callback_query.message.message_id
+    ) {
+      await ctx.api.deleteMessage(
+        ctx.from.id,
+        ctx.update.callback_query.message.message_id,
+      );
+    }
+    await ctx.api.editMessageText(
+      ctx.from.id,
+      ctx.update.callback_query.message.message_id,
+      messages[user.language], {
+        reply_markup: keys
+      }
+    )
+  } catch (error) {
+    ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message)
+  }
+}

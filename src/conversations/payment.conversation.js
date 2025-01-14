@@ -153,6 +153,14 @@ export const paymentConversation = async (conversation, ctx) => {
     };
 
     await ctx.reply(message3[user.language]);
+    await User.update(
+      {
+        payment_status: true
+      },
+      {
+        where: { id: user.id }
+      }
+    )
     return;
   } catch (error) {
     ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
