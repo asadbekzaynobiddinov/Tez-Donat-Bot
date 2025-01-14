@@ -1,6 +1,9 @@
 /* eslint-disable no-undef */
 import { InlineKeyboard } from 'grammy';
+import { config } from 'dotenv';
 import { User, Payment } from '../models/index.js';
+
+config()
 
 export const startPayment = async (ctx) => {
   try {
@@ -127,14 +130,14 @@ export const acceptPayment = async (ctx) => {
         caption:
         `Email: ${user.email}\n` +
         `Telefon: ${user.phone_number}\n` +
-        `Miqdor: ${payment.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}\n` +
+        `Miqdor: ${payment.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm\n` +
         `✅: Tasdiqlangan`,
       }
     );
     
     await ctx.api.sendMessage(
       user.telegram_id,
-      `${messages[user.language][0]}\n${messages[user.language][1]}: ${user.email}\n${messages[user.language][2]}: ${newBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`
+      `${messages[user.language][0]}\n${messages[user.language][1]}: ${user.email}\n${messages[user.language][2]}: ${newBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm`
     );
   } catch (error) {
     console.log(error);
@@ -176,7 +179,7 @@ export const rejectPaynment = async (ctx) => {
 
     await ctx.api.sendMessage(
       user.telegram_id,
-      `${messages[user.language][0]}\n${messages[user.language][1]}: ${user.email}\n${messages[user.language][2]}: ${user.balancetoString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`
+      `${messages[user.language][0]}\n${messages[user.language][1]}: ${user.email}\n${messages[user.language][2]}: ${user.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm`
     );
     
     await ctx.api.editMessageCaption(
@@ -184,7 +187,7 @@ export const rejectPaynment = async (ctx) => {
       ctx.update.callback_query.message.message_id, {
         caption: `Email: ${user.email}\n` +
         `Telefon: ${user.phone_number}\n` +
-        `Miqdor: ${payment.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}` +
+        `Miqdor: ${payment.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm` +
         `❌: Bekor qilingan`
       }
     );

@@ -1,6 +1,9 @@
 /* eslint-disable no-undef */
+import { config } from 'dotenv';
 import { User } from '../models/index.js';
-import { startCommand } from './start.command.js';
+import { startCommand } from './start.command.js'
+
+config()
 
 export const profileCommmand = async (ctx) => {
   try {

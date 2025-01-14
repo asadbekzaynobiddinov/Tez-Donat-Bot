@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-constant-condition */
 import { Payment, User } from '../models/index.js';
+import { config } from 'dotenv';
 import {
   profileCommmand,
   startCommand,
@@ -8,6 +9,8 @@ import {
   changeLang,
   startPayment,
 } from '../commands/index.js';
+
+config()
 
 export const paymentConversation = async (conversation, ctx) => {
   try {

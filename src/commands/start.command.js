@@ -1,6 +1,9 @@
 /* eslint-disable no-undef */
 import { Keyboard } from 'grammy';
+import { config } from 'dotenv';
 import { User } from '../models/index.js';
+
+config()
 
 export const startCommand = async (ctx) => {
   let currentUser;
