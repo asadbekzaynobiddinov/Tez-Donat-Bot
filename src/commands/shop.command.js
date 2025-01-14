@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import { InlineKeyboard } from 'grammy';
+import { config } from 'dotenv';
 import {
   freeFire,
   mobileLegendsTurk,
@@ -7,6 +8,8 @@ import {
   pubg,
 } from '../inline-keys/index.js';
 import { User, Order } from '../models/index.js';
+
+config()
 
 export const shopCommand = async (ctx) => {
   const user = await User.findOne({ where: { telegram_id: ctx.from.id } });

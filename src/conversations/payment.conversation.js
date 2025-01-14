@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-constant-condition */
 import { Payment, User } from '../models/index.js';
+import { config } from 'dotenv';
 import {
   profileCommmand,
   startCommand,
@@ -8,6 +9,8 @@ import {
   changeLang,
   startPayment,
 } from '../commands/index.js';
+
+config()
 
 export const paymentConversation = async (conversation, ctx) => {
   try {
@@ -112,15 +115,46 @@ export const paymentConversation = async (conversation, ctx) => {
       }
     } while (true);
 
-    const newPayment = {
+    const payment = {
       user_id: user.id,
       image_id: fileId,
-      amount,
+      amount: parseInt(amount),
     };
 
-    await Payment.create(newPayment);
+    const newPayment = await Payment.create(payment);
+
+    const message =
+      `Email: ${user.email}\n` +
+      `Telefon: ${user.phone_number}\n` +
+      `Miqdor: ${newPayment.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
+
+    await ctx.api.sendPhoto(process.env.PAYMENTS_CHANEL, fileId, {
+      caption: message,
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              text: '✅ Tasdiqlash',
+              callback_data: `accept=${newPayment.id}`,
+            },
+            {
+              text: '❌ Bekor qilish',
+              callback_data: `reject=${newPayment.id}`,
+            },
+          ],
+        ],
+      },
+    });
+
+    const message3 = {
+      uz: `Hisob to'ldirish haqida so'rovingiz qabul qilindi. \nTo'lov tekshirilib balansingizga tez orada pul tushadi!`,
+      en: `Your request for balance replenishment has been received. \nThe payment will be verified, and the amount will be credited to your balance shortly!`,
+      ru: `Ваш запрос на пополнение счета принят. \nПлатеж будет проверен, и деньги скоро поступят на ваш баланс!`,
+    };
+
+    await ctx.reply(message3[user.language]);
+    return;
   } catch (error) {
-    console.log(error);
     ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
   }
 };

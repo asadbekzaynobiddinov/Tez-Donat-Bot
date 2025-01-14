@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import { InlineKeyboard } from 'grammy';
+import { config } from 'dotenv';
 import { Order, User } from '../models/index.js';
 import {
   startCommand,
@@ -8,6 +9,8 @@ import {
   profileCommmand,
   startPayment,
 } from '../commands/index.js';
+
+config()
 
 export const orderConversation = async (conversations, ctx) => {
   try {

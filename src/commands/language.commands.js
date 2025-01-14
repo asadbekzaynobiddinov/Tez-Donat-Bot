@@ -1,6 +1,9 @@
 /* eslint-disable no-undef */
 import { InlineKeyboard, Keyboard } from 'grammy';
+import { config } from 'dotenv';
 import { User } from '../models/index.js';
+
+config()
 
 export const changeLang = async (ctx) => {
   const lang = ctx.session.lang ? ctx.session.lang : ctx.from.language_code;

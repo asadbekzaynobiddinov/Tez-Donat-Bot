@@ -1,6 +1,9 @@
 /* eslint-disable no-undef */
+import { config } from 'dotenv';
 import { User } from '../models/index.js';
-import { startCommand } from './start.command.js';
+import { startCommand } from './start.command.js'
+
+config()
 
 export const profileCommmand = async (ctx) => {
   try {
@@ -14,21 +17,27 @@ export const profileCommmand = async (ctx) => {
         message =
           `Sizning profilingiz ma'lumotlari\n` +
           `Email 👤: ${user.email}\n` +
-          `Hisob 💰: ${user.balance} so'm`;
+          `Hisob 💰: ${parseInt(user.balance)
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm`;
         ctx.session.lastMessage = await ctx.reply(message);
         break;
       case 'en':
         message =
           `Your profile information\n` +
           `Email 👤: ${user.email}\n` +
-          `Balance 💰: ${user.balance} so'm`;
+          `Balance 💰: ${parseInt(user.balance)
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm`;
         ctx.session.lastMessage = await ctx.reply(message);
         break;
       case 'ru':
         message =
           `Информация вашего профиля\n` +
           `Электронная почта 👤: ${user.email}\n` +
-          `Баланс 💰: ${user.balance} cум`;
+          `Баланс 💰: ${parseInt(user.balance)
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, '.')} cум`;
         ctx.session.lastMessage = await ctx.reply(message);
         break;
       default:

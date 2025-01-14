@@ -1,9 +1,12 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-constant-condition */
 import { Keyboard } from 'grammy';
+import { config } from 'dotenv';
 import { User, Promocode } from '../models/index.js';
 import { hashPassword } from '../utils/index.js';
 import { startCommand } from '../commands/start.command.js';
+
+config()
 
 export const registerConversation = async (conversation, ctx) => {
   let emailMessage;
@@ -76,8 +79,15 @@ export const registerConversation = async (conversation, ctx) => {
         }
       );
 
-      contactMessage = await conversation.wait();
-      phone_number = contactMessage.message.contact.phone_number;
+      do {
+        contactMessage = await conversation.wait();
+        if(!contactMessage.message.contact.phone_number){
+          await ctx.reply('Iltimos tugmani bosing')
+          continue;
+        }
+        phone_number = contactMessage.message.contact.phone_number;
+        break
+      } while (true);
 
       ctx.session.lastMessage = await ctx.reply(
         `Ajoyib. 👌🏻\nEndi asosiy qism. \nPromokod bo'lsa kiriting 🎟️\nYo'q bo'lsa shunchaki yo'q deng. 🤫`
@@ -147,8 +157,15 @@ export const registerConversation = async (conversation, ctx) => {
         }
       );
 
-      contactMessage = await conversation.wait();
-      phone_number = contactMessage.message.contact.phone_number;
+      do {
+        contactMessage = await conversation.wait();
+        if(!contactMessage.message.contact.phone_number){
+          await ctx.reply('Please press the button.')
+          continue;
+        }
+        phone_number = contactMessage.message.contact.phone_number;
+        break
+      } while (true);
 
       ctx.session.lastMessage = await ctx.reply(
         'Excellent. 👌🏻\nNow the main part. \nIf you have a promo code, enter it 🎟️\nIf not, simply say no. 🤫'
@@ -214,8 +231,15 @@ export const registerConversation = async (conversation, ctx) => {
         }
       );
 
-      contactMessage = await conversation.wait();
-      phone_number = contactMessage.message.contact.phone_number;
+      do {
+        contactMessage = await conversation.wait();
+        if(!contactMessage.message.contact.phone_number){
+          await ctx.reply('Пожалуйста, нажмите кнопку.')
+          continue;
+        }
+        phone_number = contactMessage.message.contact.phone_number;
+        break
+      } while (true);
 
       ctx.session.lastMessage = await ctx.reply(
         'Прекрасно. 👌🏻\nТеперь основная часть. \nЕсли у вас есть промокод, введите его 🎟️\nЕсли нет, просто скажите «нет» 🤫'

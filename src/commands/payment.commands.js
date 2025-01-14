@@ -1,6 +1,9 @@
 /* eslint-disable no-undef */
 import { InlineKeyboard } from 'grammy';
-import { User } from '../models/index.js';
+import { config } from 'dotenv';
+import { User, Payment } from '../models/index.js';
+
+config()
 
 export const startPayment = async (ctx) => {
   try {
@@ -71,6 +74,125 @@ export const paymentDepartments = async (ctx) => {
     );
     await ctx.conversation.enter('paymentConversation');
   } catch (error) {
+    ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
+  }
+};
+
+export const acceptPayment = async (ctx) => {
+  try {
+    const [, id] = ctx.update.callback_query.data.split('=');
+    console.log(ctx.update.callback_query.data);
+    const payment = await Payment.findOne({ where: { id } });
+    const user = await User.findOne({ where: { id: payment.user_id } });
+    const admin = await User.findOne({ where: { telegram_id: ctx.from.id } });
+    if (admin.role != 'admin') {
+      ctx.answerCallbackQuery({
+        text: `Sizda "Admin" huquqlari mvjud emas`,
+        show_alert: true,
+      });
+      return;
+    }
+    const messages = {
+      uz: [
+        'Hisob toldirish haqidagi arizangiz qabul qilindi',
+        'email',
+        'hisob',
+      ],
+      en: [
+        'Your request for balance replenishment has been received',
+        'email',
+        'balance',
+      ],
+      ru: [
+        'Ваш запрос на пополнение счета принят',
+        'электронная почта',
+        'баланс',
+      ],
+    };
+
+    let newBalance = parseInt(user.balance);
+    newBalance += parseInt(payment.amount);
+
+    await User.update(
+      {
+        balance: newBalance,
+      },
+      {
+        where: { id: payment.user_id },
+      }
+    );
+
+    
+    await ctx.api.editMessageCaption(
+      process.env.PAYMENTS_CHANEL,
+      ctx.update.callback_query.message.message_id,
+      {
+        caption:
+        `Email: ${user.email}\n` +
+        `Telefon: ${user.phone_number}\n` +
+        `Miqdor: ${payment.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm\n` +
+        `✅: Tasdiqlangan`,
+      }
+    );
+    
+    await ctx.api.sendMessage(
+      user.telegram_id,
+      `${messages[user.language][0]}\n${messages[user.language][1]}: ${user.email}\n${messages[user.language][2]}: ${newBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm`
+    );
+  } catch (error) {
+    console.log(error);
+    ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
+  }
+};
+
+export const rejectPaynment = async (ctx) => {
+  try {
+    const [, id] = ctx.update.callback_query.data.split('=');
+    const payment = await Payment.findOne({ where: { id } });
+    console.log(id);
+    const user = await User.findOne({ where: { id: payment.user_id } });
+    const admin = await User.findOne({ where: { telegram_id: ctx.from.id } });
+    if (admin.role != 'admin') {
+      ctx.answerCallbackQuery({
+        text: `Sizda "Admin" huquqlari mvjud emas`,
+        show_alert: true,
+      });
+      return;
+    }
+    const messages = {
+      uz: [
+        'Hisob toldirish haqidagi arizangiz bekor qilindi',
+        'email',
+        'hisob',
+      ],
+      en: [
+        'Your request for balance replenishment has been canceled',
+        'email',
+        'balance',
+      ],
+      ru: [
+        'Ваш запрос на пополнение счета отменен',
+        'электронная почта',
+        'баланс',
+      ],
+    };
+
+    await ctx.api.sendMessage(
+      user.telegram_id,
+      `${messages[user.language][0]}\n${messages[user.language][1]}: ${user.email}\n${messages[user.language][2]}: ${user.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm`
+    );
+    
+    await ctx.api.editMessageCaption(
+      process.env.PAYMENTS_CHANEL,
+      ctx.update.callback_query.message.message_id, {
+        caption: `Email: ${user.email}\n` +
+        `Telefon: ${user.phone_number}\n` +
+        `Miqdor: ${payment.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm` +
+        `❌: Bekor qilingan`
+      }
+    );
+  } catch (error) {
+    console.log(error);
     ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
   }
 };
