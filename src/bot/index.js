@@ -46,19 +46,19 @@ bot.use(
   })
 );
 
-// try {
-//   bot.api.setMyCommands([
-//     { command: 'start', description: 'start' },
-//     { command: 'shop', description: '🛒 Shop' },
-//     { command: 'profile', description: '👤 Profile' },
-//     { command: 'payment', description: '💰 Recharge Account' },
-//     { command: 'history', description: '🌐 Order History' },
-//     { command: 'manual', description: '📕 Manual' },
-//     { command: 'help', description: '☎️ Help' },
-//   ]);
-// } catch (error) {
-//   bot.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
-// }
+try {
+  bot.api.setMyCommands([
+    { command: 'start', description: 'start' },
+    { command: 'shop', description: '🛒 Shop' },
+    { command: 'profile', description: '👤 Profile' },
+    { command: 'payment', description: '💰 Recharge Account' },
+    { command: 'history', description: '🌐 Order History' },
+    { command: 'manual', description: '📕 Manual' },
+    { command: 'help', description: '☎️ Help' },
+  ]);
+} catch (error) {
+  bot.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
+}
 
 bot.use(conversations());
 bot.use(createConversation(registerConversation));
