@@ -1,9 +1,10 @@
 /* eslint-disable no-undef */
+import { Keyboard } from 'grammy';
 import { config } from 'dotenv';
 import { User } from '../models/index.js';
-import { startCommand } from './start.command.js'
+import { startCommand } from './start.command.js';
 
-config()
+config();
 
 export const profileCommmand = async (ctx) => {
   try {
@@ -12,6 +13,18 @@ export const profileCommmand = async (ctx) => {
       startCommand(ctx);
     }
     let message = '';
+
+    const buttons = {
+      uz: new Keyboard()
+        .text(`🌍 Tilni o'zgartirish`)
+        .text('⬅️ Orqaga')
+        .resized(),
+
+      en: new Keyboard().text('🌍 Change Language').text('⬅️ Back').resized(),
+
+      ru: new Keyboard().text('🌍 Сменить язык').text('⬅️ Назад').resized(),
+    };
+
     switch (user.language) {
       case 'uz':
         message =
@@ -20,7 +33,9 @@ export const profileCommmand = async (ctx) => {
           `Hisob 💰: ${parseInt(user.balance)
             .toString()
             .replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm`;
-        ctx.session.lastMessage = await ctx.reply(message);
+        ctx.session.lastMessage = await ctx.reply(message, {
+          reply_markup: buttons.uz,
+        });
         break;
       case 'en':
         message =
@@ -29,7 +44,9 @@ export const profileCommmand = async (ctx) => {
           `Balance 💰: ${parseInt(user.balance)
             .toString()
             .replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm`;
-        ctx.session.lastMessage = await ctx.reply(message);
+        ctx.session.lastMessage = await ctx.reply(message, {
+          reply_markup: buttons.en,
+        });
         break;
       case 'ru':
         message =
@@ -38,7 +55,9 @@ export const profileCommmand = async (ctx) => {
           `Баланс 💰: ${parseInt(user.balance)
             .toString()
             .replace(/\B(?=(\d{3})+(?!\d))/g, '.')} cум`;
-        ctx.session.lastMessage = await ctx.reply(message);
+        ctx.session.lastMessage = await ctx.reply(message, {
+          reply_markup: buttons.ru,
+        });
         break;
       default:
         break;

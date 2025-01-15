@@ -19,6 +19,9 @@ importers:
       grammy:
         specifier: ^1.34.0
         version: 1.34.0
+      moment:
+        specifier: ^2.30.1
+        version: 2.30.1
       pg:
         specifier: ^8.13.1
         version: 8.13.1

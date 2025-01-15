@@ -9,7 +9,7 @@ import {
 } from '../inline-keys/index.js';
 import { User, Order } from '../models/index.js';
 
-config()
+config();
 
 export const shopCommand = async (ctx) => {
   const user = await User.findOne({ where: { telegram_id: ctx.from.id } });
@@ -298,22 +298,21 @@ export const didNotPayCommand = async (ctx) => {
   }
 };
 
-
 export const backKey = async (ctx) => {
   try {
-    const user = await User.findOne({ where: { telegram_id: ctx.from.id }})
+    const user = await User.findOne({ where: { telegram_id: ctx.from.id } });
     const messages = {
       uz: `☟ Kereakli bo'limni tanlang:`,
       en: `☟ Select the desired section:`,
       ru: '☟ Выберите нужный раздел:',
     };
     const keys = new InlineKeyboard()
-    .text('PUBG MOBILE', 'pubg')
-    .text('FREE FIRE', 'ff')
-    .row()
-    .text('MOBILE LEGENDS SNG', 'mlbb_sng')
-    .row()
-    .text('MOBILE LEGENDS TURK', 'mlbb_turk');
+      .text('PUBG MOBILE', 'pubg')
+      .text('FREE FIRE', 'ff')
+      .row()
+      .text('MOBILE LEGENDS SNG', 'mlbb_sng')
+      .row()
+      .text('MOBILE LEGENDS TURK', 'mlbb_turk');
 
     if (
       ctx.session.lastMessage &&
@@ -322,17 +321,18 @@ export const backKey = async (ctx) => {
     ) {
       await ctx.api.deleteMessage(
         ctx.from.id,
-        ctx.update.callback_query.message.message_id,
+        ctx.update.callback_query.message.message_id
       );
     }
     await ctx.api.editMessageText(
       ctx.from.id,
       ctx.update.callback_query.message.message_id,
-      messages[user.language], {
-        reply_markup: keys
+      messages[user.language],
+      {
+        reply_markup: keys,
       }
-    )
+    );
   } catch (error) {
-    ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message)
+    ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
   }
-}
+};

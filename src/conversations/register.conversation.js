@@ -6,7 +6,7 @@ import { User, Promocode } from '../models/index.js';
 import { hashPassword } from '../utils/index.js';
 import { startCommand } from '../commands/start.command.js';
 
-config()
+config();
 
 export const registerConversation = async (conversation, ctx) => {
   let emailMessage;
@@ -81,14 +81,14 @@ export const registerConversation = async (conversation, ctx) => {
 
       do {
         contactMessage = await conversation.wait();
-        if(!contactMessage.message.contact){
+        if (!contactMessage.message.contact) {
           await ctx.reply('Iltimos tugmani bosing', {
-            reply_markup: numberKeyUz
-          })
+            reply_markup: numberKeyUz,
+          });
           continue;
         }
         phone_number = contactMessage.message.contact.phone_number;
-        break
+        break;
       } while (true);
 
       ctx.session.lastMessage = await ctx.reply(
@@ -161,14 +161,14 @@ export const registerConversation = async (conversation, ctx) => {
 
       do {
         contactMessage = await conversation.wait();
-        if(!contactMessage.message.contact){
+        if (!contactMessage.message.contact) {
           await ctx.reply('Please press the button.', {
-            reply_markup: numberKeyEn
-          })
+            reply_markup: numberKeyEn,
+          });
           continue;
         }
         phone_number = contactMessage.message.contact.phone_number;
-        break
+        break;
       } while (true);
 
       ctx.session.lastMessage = await ctx.reply(
@@ -237,14 +237,14 @@ export const registerConversation = async (conversation, ctx) => {
 
       do {
         contactMessage = await conversation.wait();
-        if(!contactMessage.message.contact){
+        if (!contactMessage.message.contact) {
           await ctx.reply('Пожалуйста, нажмите кнопку.', {
-            reply_markup: numberKeyRu
-          })
+            reply_markup: numberKeyRu,
+          });
           continue;
         }
         phone_number = contactMessage.message.contact.phone_number;
-        break
+        break;
       } while (true);
 
       ctx.session.lastMessage = await ctx.reply(
