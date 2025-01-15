@@ -3,7 +3,7 @@ import { InlineKeyboard } from 'grammy';
 import { config } from 'dotenv';
 import { User, Payment } from '../models/index.js';
 
-config()
+config();
 
 export const startPayment = async (ctx) => {
   try {
@@ -116,25 +116,25 @@ export const acceptPayment = async (ctx) => {
     await User.update(
       {
         balance: newBalance,
+        payment_status: false,
       },
       {
         where: { id: payment.user_id },
       }
     );
 
-    
     await ctx.api.editMessageCaption(
       process.env.PAYMENTS_CHANEL,
       ctx.update.callback_query.message.message_id,
       {
         caption:
-        `Email: ${user.email}\n` +
-        `Telefon: ${user.phone_number}\n` +
-        `Miqdor: ${payment.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm\n` +
-        `✅: Tasdiqlangan`,
+          `Email: ${user.email}\n` +
+          `Telefon: ${user.phone_number}\n` +
+          `Miqdor: ${payment.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm\n` +
+          `✅: Tasdiqlangan`,
       }
     );
-    
+
     await ctx.api.sendMessage(
       user.telegram_id,
       `${messages[user.language][0]}\n${messages[user.language][1]}: ${user.email}\n${messages[user.language][2]}: ${newBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm`
@@ -177,20 +177,31 @@ export const rejectPaynment = async (ctx) => {
       ],
     };
 
+    await User.update(
+      {
+        payment_status: false,
+      },
+      { where: { id: user.id } }
+    );
+
     await ctx.api.sendMessage(
       user.telegram_id,
       `${messages[user.language][0]}\n${messages[user.language][1]}: ${user.email}\n${messages[user.language][2]}: ${user.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm`
     );
-    
+
     await ctx.api.editMessageCaption(
       process.env.PAYMENTS_CHANEL,
-      ctx.update.callback_query.message.message_id, {
-        caption: `Email: ${user.email}\n` +
-        `Telefon: ${user.phone_number}\n` +
-        `Miqdor: ${payment.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm` +
-        `❌: Bekor qilingan`
+      ctx.update.callback_query.message.message_id,
+      {
+        caption:
+          `Email: ${user.email}\n` +
+          `Telefon: ${user.phone_number}\n` +
+          `Miqdor: ${payment.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} so'm\n` +
+          `❌: Bekor qilingan`,
       }
     );
+
+    await payment.destroy();
   } catch (error) {
     console.log(error);
     ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);

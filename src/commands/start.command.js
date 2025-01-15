@@ -3,7 +3,7 @@ import { Keyboard } from 'grammy';
 import { config } from 'dotenv';
 import { User } from '../models/index.js';
 
-config()
+config();
 
 export const startCommand = async (ctx) => {
   let currentUser;
@@ -82,6 +82,7 @@ export const startCommand = async (ctx) => {
   }
 
   let mainMenuKeys;
+  ctx.session.lang = currentUser.language;
 
   switch (currentUser.language) {
     case 'uz':
@@ -95,8 +96,6 @@ export const startCommand = async (ctx) => {
         .text(`📕 Qo'llanma`)
         .text('☎️ Yordam uchun')
         .row()
-        .text(`📝 To'lov tarixi`)
-        .text(`🌍 Tilni o'zgartirish`)
         .resized();
       ctx.session.lastMessage = await ctx.reply(
         `☟ Kereakli bo'limni tanlang:`,
@@ -116,9 +115,6 @@ export const startCommand = async (ctx) => {
         .row()
         .text('📕 Manual')
         .text('☎️ Help')
-        .row()
-        .text('📝 Payment History')
-        .text('🌍 Change Language')
         .resized();
 
       ctx.session.lastMessage = await ctx.reply(
@@ -140,8 +136,6 @@ export const startCommand = async (ctx) => {
         .text('📕 Руководство')
         .text('☎️ Помощь')
         .row()
-        .text('📝 История платежей')
-        .text('🌍 Сменить язык')
         .resized();
 
       ctx.session.lastMessage = await ctx.reply(`☟ Выберите нужный раздел:`, {

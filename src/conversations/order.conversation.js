@@ -5,12 +5,14 @@ import { Order, User } from '../models/index.js';
 import {
   startCommand,
   shopCommand,
-  changeLang,
   profileCommmand,
   startPayment,
+  ordersHistory,
+  helpCommand,
+  manualCommand,
 } from '../commands/index.js';
 
-config()
+config();
 
 export const orderConversation = async (conversations, ctx) => {
   try {
@@ -60,25 +62,41 @@ export const orderConversation = async (conversations, ctx) => {
         case '/start':
           startCommand(ctx);
           return;
+        case '/shop':
         case `🛒 Do'kon`:
         case '🛒 Shop':
         case '🛒 Магазин':
           shopCommand(ctx);
           return;
-        case `🌍 Tilni o'zgartirish`:
-        case '🌍 Change Language':
-        case '🌍 Сменить язык':
-          changeLang(ctx);
-          return;
+        case '/profile':
         case '👤 Kabinet':
         case '👤 Profile':
         case '👤 Профиль':
           profileCommmand(ctx);
           return;
+        case '/payment':
         case `💰 Xisob to'ldirish`:
         case '💰 Recharge Account':
         case '💰 Пополнение счета':
           startPayment(ctx);
+          return;
+        case '/history':
+        case '🌐 Buyurtmalar tarixi':
+        case '🌐 Order History':
+        case '🌐 История заказов':
+          ordersHistory(ctx);
+          return;
+        case '/manual':
+        case `📕 Qo'llanma`:
+        case '📕 Manual':
+        case '📕 Руководство':
+          manualCommand(ctx);
+          return;
+        case '/help':
+        case '☎️ Yordam uchun':
+        case '☎️ Help':
+        case '☎️ Помощь':
+          helpCommand(ctx);
           return;
       }
 

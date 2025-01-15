@@ -8,9 +8,11 @@ import {
   shopCommand,
   changeLang,
   startPayment,
+  helpCommand,
+  manualCommand,
 } from '../commands/index.js';
 
-config()
+config();
 
 export const paymentConversation = async (conversation, ctx) => {
   try {
@@ -86,6 +88,24 @@ export const paymentConversation = async (conversation, ctx) => {
         case '💰 Пополнение счета':
           startPayment(ctx);
           return;
+        case '/history':
+        case '🌐 Buyurtmalar tarixi':
+        case '🌐 Order History':
+        case '🌐 История заказов':
+          ordersHistory(ctx);
+          return;
+        case '/manual':
+        case `📕 Qo'llanma`:
+        case '📕 Manual':
+        case '📕 Руководство':
+          manualCommand(ctx);
+          return;
+        case '/help':
+        case '☎️ Yordam uchun':
+        case '☎️ Help':
+        case '☎️ Помощь':
+          helpCommand(ctx);
+          return;
       }
 
       if (
@@ -153,6 +173,14 @@ export const paymentConversation = async (conversation, ctx) => {
     };
 
     await ctx.reply(message3[user.language]);
+    await User.update(
+      {
+        payment_status: true,
+      },
+      {
+        where: { id: user.id },
+      }
+    );
     return;
   } catch (error) {
     ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);

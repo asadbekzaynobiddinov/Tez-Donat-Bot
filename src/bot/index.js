@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { Bot, session } from 'grammy';
+import { Bot, session, Keyboard } from 'grammy';
 import { conversations, createConversation } from '@grammyjs/conversations';
 import { config } from 'dotenv';
 import {
@@ -22,8 +22,15 @@ import {
   paymentDepartments,
   acceptPayment,
   rejectPaynment,
+  backKey,
+  ordersHistory,
+  prevCommand,
+  nextCommand,
+  orderButtons,
+  removeOrderButtons,
 } from '../commands/index.js';
 import { User } from '../models/index.js';
+import { helpCommand, manualCommand } from '../commands/other.commands.js';
 
 config();
 
@@ -33,9 +40,25 @@ bot.use(
   session({
     initial: () => ({
       conversation: {},
+      page: 1,
+      limit: 10,
     }),
   })
 );
+
+// try {
+//   bot.api.setMyCommands([
+//     { command: 'start', description: 'start' },
+//     { command: 'shop', description: '🛒 Shop' },
+//     { command: 'profile', description: '👤 Profile' },
+//     { command: 'payment', description: '💰 Recharge Account' },
+//     { command: 'history', description: '🌐 Order History' },
+//     { command: 'manual', description: '📕 Manual' },
+//     { command: 'help', description: '☎️ Help' },
+//   ]);
+// } catch (error) {
+//   bot.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
+// }
 
 bot.use(conversations());
 bot.use(createConversation(registerConversation));
@@ -45,6 +68,30 @@ bot.use(createConversation(paymentConversation));
 bot.command('start', async (ctx) => {
   startCommand(ctx);
 });
+
+bot.command('shop', (ctx) => {
+  shopCommand(ctx)
+})
+
+bot.command('profile', (ctx) => {
+  profileCommmand(ctx)
+})
+
+bot.command('payment', (ctx) => {
+  startPayment(ctx);
+})
+
+bot.command('history', (ctx) => {
+  ordersHistory(ctx);
+})
+
+bot.command('manual', (ctx) => {
+  manualCommand(ctx);
+})
+
+bot.command('help', (ctx) => {
+  helpCommand(ctx);
+})
 
 bot.on('callback_query:data', async (ctx) => {
   try {
@@ -95,6 +142,21 @@ bot.on('callback_query:data', async (ctx) => {
         break;
       case 'reject':
         rejectPaynment(ctx);
+        break;
+      case 'back':
+        backKey(ctx);
+        break;
+      case 'prev':
+        prevCommand(ctx);
+        break;
+      case 'next':
+        nextCommand(ctx);
+        break;
+      case 'order':
+        orderButtons(ctx);
+        break;
+      case 'remove':
+        removeOrderButtons(ctx);
         break;
       default:
         break;
@@ -179,14 +241,90 @@ bot.hears(`💰 Пополнение счета`, (ctx) => {
   startPayment(ctx);
 });
 
-// bot.hears(`🌍 Сменить язык`, (ctx) => {
-//   changeLang(ctx);
-// });
+bot.hears(`🌐 Buyurtmalar tarixi`, (ctx) => {
+  ordersHistory(ctx);
+});
 
-// bot.hears(`🌍 Сменить язык`, (ctx) => {
-//   changeLang(ctx);
-// });
+bot.hears(`🌐 Order History`, (ctx) => {
+  ordersHistory(ctx);
+});
 
-// bot.hears(`🌍 Сменить язык`, (ctx) => {
-//   changeLang(ctx);
-// });
+bot.hears(`🌐 История заказов`, (ctx) => {
+  ordersHistory(ctx);
+});
+
+bot.hears('⬅️ Orqaga', async (ctx) => {
+  const mainMenuKeys = new Keyboard()
+    .text(`🛒 Do'kon`)
+    .text('👤 Kabinet')
+    .row()
+    .text('🌐 Buyurtmalar tarixi')
+    .text(`💰 Xisob to'ldirish`)
+    .row()
+    .text(`📕 Qo'llanma`)
+    .text('☎️ Yordam uchun')
+    .row()
+    .resized();
+  ctx.session.lastMessage = await ctx.reply(`☟ Kereakli bo'limni tanlang:`, {
+    reply_markup: mainMenuKeys,
+  });
+});
+
+bot.hears('⬅️ Back', async (ctx) => {
+  const mainMenuKeys = new Keyboard()
+    .text('🛒 Shop')
+    .text('👤 Profile')
+    .row()
+    .text('🌐 Order History')
+    .text('💰 Recharge Account')
+    .row()
+    .text('📕 Manual')
+    .text('☎️ Help')
+    .resized();
+
+  ctx.session.lastMessage = await ctx.reply(`☟ Select the desired section:`, {
+    reply_markup: mainMenuKeys,
+  });
+});
+
+bot.hears('⬅️ Назад', async (ctx) => {
+  const mainMenuKeys = new Keyboard()
+    .text('🛒 Магазин')
+    .text('👤 Профиль')
+    .row()
+    .text('🌐 История заказов')
+    .text('💰 Пополнение счета')
+    .row()
+    .text('📕 Руководство')
+    .text('☎️ Помощь')
+    .row()
+    .resized();
+
+  ctx.session.lastMessage = await ctx.reply(`☟ Выберите нужный раздел:`, {
+    reply_markup: mainMenuKeys,
+  });
+});
+
+bot.hears(`📕 Qo'llanma`, (ctx) => {
+  manualCommand(ctx);
+});
+
+bot.hears('📕 Manual', (ctx) => {
+  manualCommand(ctx);
+});
+
+bot.hears('📕 Руководство', (ctx) => {
+  manualCommand(ctx);
+});
+
+bot.hears('☎️ Yordam uchun', (ctx) => {
+  helpCommand(ctx);
+});
+
+bot.hears('☎️ Help', (ctx) => {
+  helpCommand(ctx);
+});
+
+bot.hears('☎️ Помощь', (ctx) => {
+  helpCommand(ctx);
+});

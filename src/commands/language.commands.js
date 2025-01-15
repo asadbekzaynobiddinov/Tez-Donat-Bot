@@ -3,7 +3,7 @@ import { InlineKeyboard, Keyboard } from 'grammy';
 import { config } from 'dotenv';
 import { User } from '../models/index.js';
 
-config()
+config();
 
 export const changeLang = async (ctx) => {
   const lang = ctx.session.lang ? ctx.session.lang : ctx.from.language_code;
@@ -58,9 +58,6 @@ export const setLang = async (ctx, lang) => {
         .row()
         .text(`📕 Qo'llanma`)
         .text('☎️ Yordam uchun')
-        .row()
-        .text(`📝 To'lov tarixi`)
-        .text(`🌍 Tilni o'zgartirish`)
         .resized();
       try {
         await ctx.api.deleteMessage(
@@ -84,9 +81,6 @@ export const setLang = async (ctx, lang) => {
         .row()
         .text('📕 Manual')
         .text('☎️ Help')
-        .row()
-        .text('📝 Payment History')
-        .text('🌍 Change Language')
         .resized();
       try {
         await ctx.api.deleteMessage(
@@ -110,9 +104,6 @@ export const setLang = async (ctx, lang) => {
         .row()
         .text('📕 Руководство')
         .text('☎️ Помощь')
-        .row()
-        .text('📝 История платежей')
-        .text('🌍 Сменить язык')
         .resized();
       try {
         await ctx.api.deleteMessage(
