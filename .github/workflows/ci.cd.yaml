@@ -43,4 +43,5 @@ jobs:
           chmod 600 private_key.pem
           ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.USER }}@${{ secrets.HOST }} << 'EOF'
           cd Tez-Donat-Bot
-          node bot.js
+          git pull
+          npx pm2 start bot.js
