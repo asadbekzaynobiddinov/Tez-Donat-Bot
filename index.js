@@ -15,7 +15,7 @@ async function bootstrap() {
   await sequelize.sync();
 
   const endpoint = 'https://bot.takedaservice.uz'
-  await bot.api.setWebhook(endpoint);
+  bot.start();
   console.log('Webhock was set')
 
   app.listen(3000, () => {
