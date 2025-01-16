@@ -20,12 +20,12 @@ export const shopCommand = async (ctx) => {
   };
 
   const keys = new InlineKeyboard()
-    .text('PUBG MOBILE', 'pubg')
-    .text('FREE FIRE', 'ff')
+    .text('PUBG MOBILE 💣', 'pubg')
+    .text('FREE FIRE 🔫', 'ff')
     .row()
-    .text('MOBILE LEGENDS SNG', 'mlbb_sng')
+    .text('MOBILE LEGENDS SNG 🏹', 'mlbb_sng')
     .row()
-    .text('MOBILE LEGENDS TURK', 'mlbb_turk');
+    .text('MOBILE LEGENDS TURK 🏹', 'mlbb_turk');
 
   ctx.session.lastMessage = await ctx.reply(message[user.language], {
     reply_markup: keys,
