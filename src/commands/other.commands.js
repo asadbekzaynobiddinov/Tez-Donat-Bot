@@ -20,7 +20,7 @@ export const helpCommand = async (ctx) => {
     };
     return await ctx.reply(message[user.language], { parse_mode: 'HTML' });
   } catch (error) {
-    ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.sendMessage);
+    ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
   }
 };
 
@@ -34,6 +34,6 @@ export const manualCommand = async (ctx) => {
     };
     return await ctx.reply(message[user.language]);
   } catch (error) {
-    ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.sendMessage);
+    ctx.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
   }
 };

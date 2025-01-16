@@ -25,6 +25,7 @@ export const paymentConversation = async (conversation, ctx) => {
           "Nuqta(.) vergul(,) ishlatmasdan jo'nating, " +
           "na'muna: 10000",
         "Iltimos, to'g'ri summa kiriting (faqat raqam, (.) va (,) siz).",
+        "To'lov paytida tugmalardan foydalanmang. \nFaqat summani yozing.",
       ],
       en: [
         'After making the payment to the card above.\n\n' +
@@ -32,6 +33,7 @@ export const paymentConversation = async (conversation, ctx) => {
           'Do not use a period (.) or comma (,), ' +
           'example: 10000',
         'Please enter the correct amount (numbers only, without (.) or (,)).',
+        "Please don't use buttons during payment. \nJust write the amount.", 
       ],
       ru: [
         'После оплаты на указанную карту.\n\n' +
@@ -39,6 +41,7 @@ export const paymentConversation = async (conversation, ctx) => {
           'Не используйте точку (.) или запятую (,), ' +
           'пример: 10000',
         'Пожалуйста, введите правильную сумму (только цифры, без (.) или (,)).',
+        "Пожалуйста, не используйте кнопки во время оплаты. \nПросто напишите сумму.",
       ],
     };
     const message2 = {
@@ -61,8 +64,18 @@ export const paymentConversation = async (conversation, ctx) => {
     let amount;
 
     do {
-      const { message } = await conversation.wait();
-      amount = message.text;
+      const AmountMessage  = await conversation.wait();
+      
+      if (AmountMessage.update.callback_query) {
+        await ctx.api.deleteMessage(
+          ctx.from.id,
+          AmountMessage.update.callback_query.message.message_id
+        )
+        await ctx.reply(message1[user.language][2]);
+        continue;
+      }
+
+      amount = AmountMessage.message.text;
 
       switch (amount) {
         case '/start':
@@ -109,11 +122,13 @@ export const paymentConversation = async (conversation, ctx) => {
       }
 
       if (
+        !amount ||
         isNaN(amount) ||
         amount <= 0 ||
         amount.includes('.') ||
         amount.includes(',')
       ) {
+        console.log(ctx)
         ctx.session.lastMessage = await ctx.reply(message1[user.language][1]);
       } else {
         break;

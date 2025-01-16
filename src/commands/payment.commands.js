@@ -63,7 +63,8 @@ export const paymentDepartments = async (ctx) => {
       );
       return;
     }
-    ctx.session.lastMessage = await ctx.reply(
+
+    await ctx.reply(
       `<code>9860190112424188</code>\n` +
         `Alimov Hoshim\n` +
         `Aloqa bank\n` +
@@ -81,7 +82,6 @@ export const paymentDepartments = async (ctx) => {
 export const acceptPayment = async (ctx) => {
   try {
     const [, id] = ctx.update.callback_query.data.split('=');
-    console.log(ctx.update.callback_query.data);
     const payment = await Payment.findOne({ where: { id } });
     const user = await User.findOne({ where: { id: payment.user_id } });
     const admin = await User.findOne({ where: { telegram_id: ctx.from.id } });
