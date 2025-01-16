@@ -6,7 +6,7 @@ config();
 
 export const helpCommand = async (ctx) => {
   try {
-    const user = User.findOne({ where: { telegram_id: ctx.from.id } });
+    const user = await User.findOne({ where: { telegram_id: ctx.from.id } });
     const message = {
       uz:
         `To'lovlar yuzasidan:\nAdmin: <a>@Rastar_uz</a>\n\n` +
@@ -26,7 +26,7 @@ export const helpCommand = async (ctx) => {
 
 export const manualCommand = async (ctx) => {
   try {
-    const user = User.findOne({ where: { telegram_id: ctx.from.id } });
+    const user = await User.findOne({ where: { telegram_id: ctx.from.id } });
     const message = {
       uz: `Tez orada bot uchun qo'llanma yoziladi`,
       en: `A guide for the bot will be written soon`,
