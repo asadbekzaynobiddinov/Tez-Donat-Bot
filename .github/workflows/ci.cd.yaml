@@ -43,6 +43,8 @@ jobs:
           chmod 600 private_key.pem
           ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.USER }}@${{ secrets.HOST }} << 'EOF'
           cd Tez-Donat-Bot
-          npx pm2 delete bot.js
+          npx pm2 delete Tez_Donat
           git pull
-          npx pm2 start bot.js
+          npm i -g pnpm 
+          pnpm i
+          npx pm2 start index.js --name Tez_Donat
