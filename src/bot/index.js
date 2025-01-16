@@ -49,19 +49,19 @@ bot.use(
 );
 
 
-// try {
-//   bot.api.setMyCommands([
-//     { command: 'start', description: 'start' },
-//     { command: 'shop', description: '🛒 Shop' },
-//     { command: 'profile', description: '👤 Profile' },
-//     { command: 'payment', description: '💰 Recharge Account' },
-//     { command: 'history', description: '🌐 Order History' },
-//     { command: 'manual', description: '📕 Manual' },
-//     { command: 'help', description: '☎️ Help' },
-//   ]);
-// } catch (error) {
-//   bot.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
-// }
+try {
+  bot.api.setMyCommands([
+    { command: 'start', description: `Botni ishga tushurish` },
+    { command: 'shop', description: `🛒 Do'kon` },
+    { command: 'profile', description: '👤 Kabinet' },
+    { command: 'payment', description: `💰 Xisob to'ldirish` },
+    { command: 'history', description: '🌐 Buyurtmalar tarixi' },
+    { command: 'manual', description: `📕 Qo'llanma` },
+    { command: 'help', description: `☎️ Yordam` },
+  ]);
+} catch (error) {
+  bot.api.sendMessage(process.env.ERRORS_CHANEL, error.message);
+}
 
 bot.use(conversations());
 bot.use(createConversation(registerConversation));
