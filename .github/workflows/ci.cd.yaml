@@ -22,7 +22,7 @@ jobs:
           node-version: '23'
 
       - name: Install pnpm
-        run: npm i pnpm
+        run: npm i -g pnpm
 
       - name: Dependencies
         run: pnpm i
