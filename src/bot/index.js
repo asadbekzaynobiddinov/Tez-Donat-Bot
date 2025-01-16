@@ -48,6 +48,7 @@ bot.use(
   })
 );
 
+
 // try {
 //   bot.api.setMyCommands([
 //     { command: 'start', description: 'start' },
