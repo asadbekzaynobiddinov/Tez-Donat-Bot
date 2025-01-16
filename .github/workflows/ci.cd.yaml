@@ -44,7 +44,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.USER }}@${{ secrets.HOST }} << 'EOF'
           cd Tez-Donat-Bot
           npx pm2 delete Tez_Donat
-          git pull
+          git pull origin main
           npm i -g pnpm 
           pnpm i
           npx pm2 start index.js --name Tez_Donat
