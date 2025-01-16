@@ -16,7 +16,7 @@ const app = express();
 app.use(json());
 
 // Webhookni sozlash
-app.use("/bot", webhookCallback(bot)); // To‘g‘ridan-to‘g‘ri botni ulash
+app.use("/bot", webhookCallback('/bot')); // To‘g‘ridan-to‘g‘ri botni ulash
 
 const PORT = 3000;
 
