@@ -7,7 +7,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use('/bot', webhookCallback(bot));
+app.use(webhookCallback(bot, 'express'));
 
 async function bootstrap() {
   await sequelize.authenticate();
