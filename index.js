@@ -22,5 +22,4 @@ async function bootstrap() {
   });
 }
 
-
 bootstrap();
