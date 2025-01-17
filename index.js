@@ -14,7 +14,7 @@ async function bootstrap() {
   await sequelize.sync();
   app.listen(3001, () => {
     console.log('Server is running on port 3001');
-    bot.api.setWebhook('https://bot.takedaservice.uz/bot').then(() => {
+    bot.api.setWebhook('https://bot.takedaservice.uz:3001/bot').then(() => {
       console.log('Webhook is set successfully');
     }).catch((err) => {
       console.error('Error setting webhook:', err);
